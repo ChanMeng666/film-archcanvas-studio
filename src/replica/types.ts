@@ -12,10 +12,10 @@
  *     host drives `t` from a rAF clock; the film drives it from `frame / fps`.
  *     Both must paint the same pixels for the same `t`.
  *  3. **No product name for the compiler.** This is a consumer surface, and the
- *     DSL is invisible to the buyer (`tests/marketingNoCode.test.ts` scans this
+ *     DSL is invisible to the buyer (`tests/marketing/marketingNoCode.test.ts` scans this
  *     directory).
  *
- * `tests/studioReplicaPurity.test.ts` enforces 1 and 2 mechanically.
+ * `tests/marketing/studioReplicaPurity.test.ts` enforces 1 and 2 mechanically.
  */
 
 /** The seven acts of the landing loop, in order. */
@@ -25,7 +25,7 @@ export type ChapterId =
   | "edit"
   | "tweak"
   | "review"
-  | "render"
+  | "preview3d"
   | "export";
 
 /**
@@ -58,7 +58,6 @@ export interface Vec {
 export type CursorRef =
   /* Act I, the brief composer */
   | "composer.input"
-  | "composer.typology"
   | "composer.cta"
   /* Act II, the floating command bar */
   | "command.input"
@@ -67,6 +66,9 @@ export type CursorRef =
   | "sheet.tweak"
   | "sheet.export"
   | "sheet.reviewBadge"
+  /* The card's Plan | 3D preview switch */
+  | "sheet.viewPlan"
+  | "sheet.view3d"
   /* The tweaks panel */
   | "tweaks.slider"
   | "tweaks.save";
@@ -131,7 +133,6 @@ export type Action =
   | { k: "click" }
   /* ── brief ────────────────────────────────────────────────────────────── */
   | { k: "typeBrief"; text: string }
-  | { k: "pickTypology"; label: string }
   | { k: "launch" }
   /* ── draw ─────────────────────────────────────────────────────────────── */
   | { k: "drafting"; steps: readonly DraftingStep[]; title: string; chips: readonly string[] }
@@ -156,8 +157,11 @@ export type Action =
   | { k: "reviewBadge"; count: number }
   | { k: "dropPins"; pins: readonly ReviewFinding[] }
   | { k: "openPin"; index: number }
-  /* ── render + export ──────────────────────────────────────────────────── */
-  | { k: "showRendering"; src: string }
+  /* ── 3D preview + export ──────────────────────────────────────────────── */
+  /** The card switches to its 3D preview, showing `src` (a still of it). */
+  | { k: "open3d"; src: string }
+  /** …and back to its plan. */
+  | { k: "close3d" }
   | { k: "openExport" }
   | { k: "hoverExport"; item: string }
   /* ── stage ────────────────────────────────────────────────────────────── */
@@ -207,8 +211,6 @@ export interface Screenplay {
 export interface DemoInputs {
   /** The architect's brief, typed character by character in Act I. */
   brief: string;
-  /** The typology picked in the composer, by its visible label. */
-  typology: string;
   /** The design's name, as the drafting sheet prints it. */
   title: string;
   /** The room chips the drafting sheet fills in. */
@@ -227,8 +229,11 @@ export interface DemoInputs {
   };
   /** Real review output — never invented copy. */
   findings: readonly ReviewFinding[];
-  /** The rendering image shown in the render chapter. */
-  renderingSrc: string;
+  /**
+   * The image the 3D preview chapter shows: a still of the product's own 3D
+   * preview of the same building (never an AI image).
+   */
+  preview3dSrc: string;
   /** How many storey pages the plan has (1 = single storey, no chips). */
   pageCount: number;
 }
@@ -260,8 +265,6 @@ export interface ComposerState {
   text: string;
   /** Blink phase for the caret — a pure function of `t`. */
   caret: boolean;
-  /** The picked typology's visible label, or null while free-form. */
-  typology: string | null;
   /** The CTA is held down. */
   ctaPressed: boolean;
 }
@@ -332,7 +335,11 @@ export interface ReplicaState {
   tweaks: TweaksState;
   storey: { page: number; chipsVisible: boolean };
   review: ReviewState;
-  rendering: { p: number; src: string | null };
+  /**
+   * The card's view: `p` is how far its 3D preview has replaced the plan,
+   * 0 (the plan) → 1 (the 3D preview), and `src` the still it shows.
+   */
+  preview3d: { p: number; src: string | null };
   exportMenu: { open: number; hovered: string | null };
   toast: { text: string | null; p: number };
   caption: { text: string | null; p: number };

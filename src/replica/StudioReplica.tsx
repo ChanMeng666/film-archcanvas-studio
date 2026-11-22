@@ -46,7 +46,7 @@ import { Cursor } from "./parts/Cursor";
 import { DraftingSheet } from "./parts/DraftingSheet";
 import { ExportMenu } from "./parts/ExportMenu";
 import { GHOST_LAYERS, PlanSvg } from "./parts/PlanSvg";
-import { RenderingCard } from "./parts/RenderingCard";
+import { Preview3DView } from "./parts/Preview3DView";
 import { ReviewPins } from "./parts/ReviewPins";
 import { SheetChrome } from "./parts/SheetChrome";
 import { Toast } from "./parts/Toast";
@@ -245,6 +245,13 @@ function Studio({
                 style={FILL}
               />
             ) : null}
+            {/* The card's 3D preview, laid over its plan as the product lays it. */}
+            <Preview3DView
+              spec={spec}
+              src={state.preview3d.src}
+              progress={state.preview3d.p}
+              assetUrl={assetUrl}
+            />
           </div>
         ) : null}
 
@@ -253,14 +260,8 @@ function Studio({
       </CanvasStage>
 
       {/* Design-space overlays, in z order: the pins sit on the drawing, the
-          rendering floats beside it, the menu and the toast sit over both. */}
+          menu and the toast sit over both. */}
       <ReviewPins ctx={ctx} />
-      <RenderingCard
-        spec={spec}
-        src={state.rendering.src}
-        progress={state.rendering.p}
-        assetUrl={assetUrl}
-      />
       {spec.tweaks.mode === "docked" ? <TweaksPanel spec={spec} state={state} /> : null}
       <CommandBar spec={spec} state={state} />
       <DraftingSheet spec={spec} state={state} />

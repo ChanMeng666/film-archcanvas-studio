@@ -18,7 +18,7 @@ crop**.
 
 The two earlier films are cut from screen recordings. This one renders a **coded replica**
 of the product's studio — the infinite canvas, the composer, the drafting sheet, the plan
-drawing itself out layer by layer, an edit, the review pins, a rendering, the export
+drawing itself out layer by layer, an edit, the review pins, the 3D preview, the export
 menu — rebuilt in plain CSS and React as a pure function of time.
 
 That buys three things a recording cannot give: a portrait layout that is the product's
@@ -35,7 +35,7 @@ The replica's home is the **private product repo**, at
 ```bash
 npm install
 
-# stage the replica, the baked plan data and the renderings from the product repo
+# stage the replica, the baked plan data and the 3D preview still from the product repo
 npm run sync:replica                          # sibling ../archcanvas
 node scripts/sync-replica.mjs --from <path>   # or any checkout / worktree
 

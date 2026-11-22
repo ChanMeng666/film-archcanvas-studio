@@ -3,7 +3,7 @@
  * merge the layer defaults — and hand back a WHOLE page a renderer can draw.
  *
  * This is a port of `resolveLandingPage` / `applyPageDelta` / `expandLandingPage`
- * in `scripts/generate-studio-demo.mjs`, and it is a port rather than an import
+ * in `scripts/studio-demo/generate-studio-demo.mjs`, and it is a port rather than an import
  * for the reason stated in `planTypes.ts`: nothing in this directory may reach
  * outside it. `tests/studioReplicaResolve.test.ts` proves the two agree on every
  * page of the real payload, so a bake that changes the format cannot leave the

@@ -1,11 +1,14 @@
 /**
- * Act I — the brief composer, and the page it sits on
- * (`src/app/dashboard/page.tsx` + `src/components/dashboard/BriefComposer.tsx`).
+ * Act I — the brief composer, and the page it sits on ("Your designs":
+ * `src/components/dashboard/DashboardView.tsx` + `BriefComposer.tsx`).
  *
- * A heading, one card — the brief, a typology select, the reference-image button
- * and a CTA that NAMES THE PRICE — and the hint underneath. The CTA is the
- * product's whole commercial posture in a button, so it is rendered verbatim
- * from `strings.ts` rather than paraphrased: "Design my plan · 1 credit".
+ * A heading, one card — the brief, the closed "Options" button and a CTA that
+ * NAMES THE PRICE — and the keyboard hint underneath. The CTA is the product's
+ * whole commercial posture in a button, so it is rendered verbatim from
+ * `strings.ts` rather than paraphrased: "Design my plan · 1 credit". (Until
+ * 2026-11-20 the card also had a typology select and a reference-image button,
+ * and the page a sub-line; the product moved the first two behind "Options" and
+ * dropped the third, so the replica draws none of them.)
  *
  * ⚠ IT IS LAID OUT AT `composer.scale`, NOT AT `k`. The first nine seconds of
  * the loop are this screen, and they are the first impression of everything
@@ -26,10 +29,7 @@ import {
   BRIEF_PLACEHOLDER,
   COMPOSER_HINT,
   DASHBOARD_HEADING,
-  DASHBOARD_SUBHEADING,
-  REFERENCE_BUTTON,
-  TYPOLOGY_FREEFORM,
-  TYPOLOGY_LABEL,
+  OPTIONS_BUTTON,
 } from "../strings";
 import { type as typeStyle, u } from "../style";
 import type { ReplicaState } from "../types";
@@ -43,7 +43,8 @@ export function Composer({ spec, state }: { spec: LayoutSpec; state: ReplicaStat
   return (
     <>
       {/* ── the page's own heading ── the dashboard's words, not the landing
-          page's. `tests/studioReplicaStrings.test.ts` reads `page.tsx`. */}
+          page's. `tests/marketing/studioReplicaStrings.test.ts` reads
+          `DashboardView.tsx`. */}
       <div
         style={{
           position: "absolute",
@@ -55,18 +56,6 @@ export function Composer({ spec, state }: { spec: LayoutSpec; state: ReplicaStat
         }}
       >
         {DASHBOARD_HEADING}
-      </div>
-      <div
-        className="sr-muted sr-wrap"
-        style={{
-          position: "absolute",
-          left: u(c.subheading.x),
-          top: u(c.subheading.y),
-          width: u(c.subheading.w),
-          ...typeStyle(15 * a, 1.5),
-        }}
-      >
-        {DASHBOARD_SUBHEADING}
       </div>
 
       <div
@@ -109,65 +98,22 @@ export function Composer({ spec, state }: { spec: LayoutSpec; state: ReplicaStat
           ) : null}
         </div>
 
-        {/* ── the control row ── */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: u(c.typology.y - c.card.y - 14 * a),
-            width: u(c.card.w),
-            height: "var(--sr-hair)",
-            background: "var(--sr-border)",
-          }}
-        />
-
+        {/* ── the control row ── the closed "Options" button, borderless and
+            muted as the product draws it; what it hides is not drawn. */}
         <span
-          className="sr-muted"
+          className="sr-row sr-muted"
           style={{
             position: "absolute",
-            left: u(c.typology.x - c.card.x - 74 * a),
-            top: u(c.typology.y - c.card.y + c.typology.h / 2),
-            transform: "translateY(-50%)",
-            ...typeStyle(11 * a, 1),
+            left: u(c.options.x - c.card.x),
+            top: u(c.options.y - c.card.y),
+            width: u(c.options.w),
+            height: u(c.options.h),
+            gap: u(4 * a),
+            ...typeStyle(14 * a, 1),
           }}
         >
-          {TYPOLOGY_LABEL}
-        </span>
-
-        <span
-          className="sr-row sr-pill"
-          style={{
-            position: "absolute",
-            left: u(c.typology.x - c.card.x),
-            top: u(c.typology.y - c.card.y),
-            width: u(c.typology.w),
-            height: u(c.typology.h),
-            padding: `0 ${u(10 * a)}`,
-            justifyContent: "space-between",
-            border: `var(--sr-hair) solid ${state.composer.typology ? "rgb(106 61 240 / 0.45)" : "var(--sr-border)"}`,
-            background: "var(--sr-background)",
-            ...typeStyle(12 * a, 1),
-          }}
-        >
-          <span className="sr-truncate">{state.composer.typology ?? TYPOLOGY_FREEFORM}</span>
+          {OPTIONS_BUTTON}
           <Icon name="chevronDown" size={u(12 * a)} color="var(--sr-muted-foreground)" />
-        </span>
-
-        <span
-          className="sr-row sr-pill sr-outline"
-          style={{
-            position: "absolute",
-            left: u(c.reference.x - c.card.x),
-            top: u(c.reference.y - c.card.y),
-            width: u(c.reference.w),
-            height: u(c.reference.h),
-            justifyContent: "center",
-            gap: u(6 * a),
-            ...typeStyle(13 * a, 1, 500),
-          }}
-        >
-          <Icon name="image" size={u(13 * a)} />
-          {REFERENCE_BUTTON}
         </span>
 
         {/* The CTA names the price. Pressed = a 1 unit nudge, the product's

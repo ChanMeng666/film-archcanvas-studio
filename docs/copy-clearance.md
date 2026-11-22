@@ -118,7 +118,14 @@ screen in **all eight masters**.
 | Line | Why it is mandatory | Where it goes |
 | --- | --- | --- |
 | the honesty caption | A real design takes two to three minutes; the replica compresses it to seconds. Time compression read as a speed promise is a claim nobody made. On screen **≥ 3 s of FILM time** in every cut. | over the `draw` scene |
-| the AI-generated pill | EU AI Act Art. 50. It is the product's own pill, always visible on a rendering, never a hover state. | wherever `render` shows a rendering |
+| the 3D preview's own marks | The view has no badge, in the product or the replica. What says what it is: the card's switch, pressed on "3D preview", and the limits line the product keeps under every 3D preview. Both are held whole whenever the 3D preview is >= 50 % opaque (`verify:honesty` § 3, in 9:16 inside the platform-safe frame). | wherever the `preview3d` scene shows the 3D preview (the 60 s and 120 s cuts of B; the 30 s, 60 s and 120 s cuts of A) |
+
+**Retired 2026-11-22: the "AI-generated" pill.** It was mandatory on every
+rendering (EU AI Act Art. 50). Renderings were removed from the product on
+2026-11-22 (archcanvas #399), the film's render chapter became the 3D preview
+chapter, and nothing in the film is an AI image any more, so no master carries
+the pill and none needs to. The obligation returns with the pill if a rendering
+ever does.
 
 **The honesty floor is derived, not typed.** The replica carries the caption at
 screenplay 8.0–12.5 s, and `at.ts` envelopes it, so the readable core is
@@ -201,8 +208,10 @@ registration-gated: those strings are cleared upstream by
 `tests/marketingNoCode.test.ts` sitting next to them, and a clearance row here
 would be a second, drifting copy of that authority. Everything the studio says
 on screen is in that category — `Drafting…`, `Design my plan · 1 credit`,
-`Tweak parameters`, `AI-generated`, `Have AI fix`, the phase lines, the review
-findings (verbatim `lint()` output), the export menu's two groups.
+`Tweak parameters`, `Have AI fix`, the phase lines, the review findings
+(verbatim `lint()` output), the export menu's two groups, and since the
+2026-11-22 re-sync the card's `Plan` | `3D preview` switch and the 3D preview's
+limits line (table below). `AI-generated` left the screen with the renderings.
 
 **3. The product's own SHOWCASE ROSTER** — new in WP-9, and the one thing worth
 spelling out. The 120 s cut's second brief draws four published showcase plans,
@@ -227,8 +236,47 @@ states are prefixes of a cleared string and cannot introduce a word the finished
 one does not contain.
 
 **The chapter chips** carry `Brief` / `Draw` / `Edit` / `Tweak` / `Review` /
-`Render` / `Export` — the replica's own `CHAPTERS` labels, which are also the
-landing page's chapter tabs. Product vocabulary, not the film's.
+`3D preview` / `Export` — the replica's own `CHAPTERS` labels, which are also the
+landing page's chapter tabs. Product vocabulary, not the film's. (`Render` was
+the sixth until the 2026-11-22 re-sync; archcanvas #399 renamed the chapter.)
+
+### The 2026-11-22 re-sync: the product strings that changed on screen
+
+The replica stays registration-exempt, for the reason above: its strings are
+proved byte for byte against product source upstream
+(`tests/marketing/studioReplicaStrings.test.ts`). These rows are the record of
+what the re-sync (archcanvas `6a90829`, which brings in #364, #365 and #399)
+changed on screen, with the product source each string is proved against, so a
+reviewer of these masters does not have to diff the replica to find out.
+
+**New on screen.**
+
+| Line | Where | Product source (the replica's `strings.ts` constant) | Cleared? | Note |
+| --- | --- | --- | --- | --- |
+| `Plan` | the card's view switch, 3D preview chapter | `designFrame/ViewSwitch.tsx` (`VIEW_PLAN`) | ✅ | The product's own control label. |
+| `3D preview` | the view switch, and the chapter chip | `designFrame/ViewSwitch.tsx`; also `PREVIEW_3D_NAME` in `src/lib/canvas/preview3d/policy.ts` (`VIEW_3D_PREVIEW`); the chip is `CHAPTERS` in `screenplay.ts` | ✅ | The product's required name for the view. Never "render", "3D model" or "walkthrough". |
+| `3D preview: walls, openings, floors, stairs and furniture in flat colours. No pitched roofs, sections or elevations.` | under the 3D preview, whenever it shows | `PREVIEW_3D_LIMITS` in `src/lib/canvas/preview3d/policy.ts` (`PREVIEW_3D_LIMITS_LINE`) | ✅ | Says what the view draws and what it does not. Protected whole by `verify:honesty` § 3. |
+| `Your designs` | Act I heading | `DASHBOARD_COPY.title` in `src/components/dashboard/DashboardView.tsx` (`DASHBOARD_HEADING`), #365 | ✅ | Replaces "Your Projects". The page has no sub-line any more, so none is drawn. |
+| `A three-bedroom house with an open-plan kitchen and a study…` | the composer's placeholder, before the brief is typed | `COMPOSER_COPY` in `src/components/dashboard/BriefComposer.tsx` (`BRIEF_PLACEHOLDER`) | ✅ | |
+| `Enter to send · Shift+Enter for a new line` | under the composer | `COMPOSER_COPY.keys` (`COMPOSER_HINT`) | ✅ | |
+| `Options` | the composer's one secondary control, closed | `COMPOSER_COPY.options` (`OPTIONS_BUTTON`), #365 | ✅ | Building type and reference photos sit behind it; the replica draws the closed button only. |
+| `Drawing the first layout…` | the drafting sheet | `DRAFTING_PHASES` in `strings.ts`, proved against `src/lib/chat/designerProgress.ts`, #364 | ✅ | Replaces "Designing your plan…". |
+| `Checking that every room can be reached across 2 floors…` | the drafting sheet | same, #364 | ✅ | "reached" is reachability, one of the three things B11 allows as measurement. |
+| `Fixing 3 problems in the drawing across 2 floors…` | the drafting sheet | same, #364 | ✅ | The pass counter ("pass 2 of 4") is gone. |
+| `Reviewing the drawing against your brief across 2 floors…` | the drafting sheet | same, #364 | ✅ | |
+| `A first design takes a while — usually 2 to 3 minutes.` | the drafting sheet | `expectationLine` in `src/lib/chat/designerProgress.ts`, built from `WAIT_PROMISE` in `src/lib/studio/waitCopy.ts` (`EXPECTATION_LINE`), #364 | ✅ | A time expectation, the opposite of a speed claim; it agrees with the honesty caption. |
+
+**No longer on screen** (no row was ever registered for them here, because the
+replica is exempt; listed so the change is visible): `AI-generated` (the pill),
+`Render` (the chapter chip), `Your Projects`, `Each project is one strong
+design, refined with your AI architectural designer on an infinite canvas.`,
+`Typology`, `Residential` (the typology picked), `Reference`, `Designing your
+plan…`, `Checking every route, door and clearance across 2 floors…`, `Fixing 3
+issues across 2 floors — pass 2 of 4…`, `Reviewing the drawing against your
+brief across 2 floors — pass 3 of 4…`, `Designing, checking and reviewing your
+plan — usually 2–3 minutes.`, and the old composer placeholder and hint. These
+are deliberately written without backticks so they do not become cleared
+phrases.
 
 ### The one line that was open, and the switch that held it
 

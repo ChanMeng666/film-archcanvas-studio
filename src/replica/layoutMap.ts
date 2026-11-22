@@ -363,8 +363,6 @@ export function resolveTarget(ctx: TargetContext, target: CursorTarget | null): 
           const r = spec.composer.input;
           return norm(spec, r.x + 40 * spec.k, r.y + 20 * spec.k);
         }
-        case "composer.typology":
-          return centreOf(spec, spec.composer.typology);
         case "composer.cta":
           return centreOf(spec, spec.composer.cta);
         case "command.input": {
@@ -379,6 +377,10 @@ export function resolveTarget(ctx: TargetContext, target: CursorTarget | null): 
           return worldCentre(ctx, sheetChrome(spec, ctx.storeys, ctx.state.review.badgeCount).exportBtn);
         case "sheet.reviewBadge":
           return worldCentre(ctx, sheetChrome(spec, ctx.storeys, ctx.state.review.badgeCount).reviewBadge);
+        case "sheet.viewPlan":
+          return worldCentre(ctx, sheetChrome(spec, ctx.storeys, ctx.state.review.badgeCount).viewPlanBtn);
+        case "sheet.view3d":
+          return worldCentre(ctx, sheetChrome(spec, ctx.storeys, ctx.state.review.badgeCount).view3dBtn);
         case "tweaks.slider": {
           const t = tweaksControls(ctx).track;
           // The thumb, not the middle of the track — the cursor is dragging it.

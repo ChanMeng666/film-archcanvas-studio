@@ -22,10 +22,15 @@
  *   A. sourced   — every area/dimension numeral in this repo's OWN on-screen copy
  *                  (the film's cards, not the synced replica) is a substring of
  *                  the drawlist. Implemented.
- *   B. paired    — a rendering is only ever shown beside its OWN plan: a file
- *                  reaching for `renders/family-house-*` in the same component as
- *                  a `two-storey-townhouse` reference is a crossed pair.
- *                  Implemented.
+ *   B. paired    — a picture of a plan is only ever shown beside its OWN plan.
+ *                  While the film showed renderings this matched
+ *                  `renders/<plan>-*.webp` against the other plan's name. Since
+ *                  2026-11-22 the one picture is the product's own 3D preview
+ *                  of the demo's final variant (`studio-demo/townhouse-tweak3-3d.webp`),
+ *                  baked upstream from that variant's own source, so the pairing
+ *                  is the product's (its capture script and tests). Kept as a
+ *                  check on `<plan>-*-3d.webp` names in case a second plan's
+ *                  still ever arrives.
  *   C. pinned    — the review pins' sentences must be the variant's real lint
  *                  output, never written for the film. NOT implemented here: the
  *                  authority is the product's own bake (WP-1), and the check
@@ -137,24 +142,24 @@ for (const n of found) {
 
 /* ── pairing ──────────────────────────────────────────────────────────────── */
 
-/** The two plans this film uses, and the renderings that belong to each. */
+/** The two plans this film uses, and the pictures that would belong to each. */
 const PLANS = ["two-storey-townhouse", "family-house"];
 
 for (const file of files) {
   const rel = slash(path.relative(ROOT, file));
   const text = fs.readFileSync(file, "utf8");
   const rendered = new Set(
-    [...text.matchAll(/renders\/([a-z-]+?)-(?:aerial|exterior|interior)\.webp/g)].map((m) => m[1]),
+    [...text.matchAll(/(?:renders|studio-demo)\/([a-z-]+?)-(?:aerial|exterior|interior|[a-z0-9]+-3d)\.webp/g)].map((m) => m[1]),
   );
   if (rendered.size === 0) continue;
   for (const plan of PLANS) {
     if (rendered.has(plan)) continue;
-    // A component that shows one plan's rendering must not also name the other plan.
+    // A component that shows one plan's picture must not also name the other plan.
     if (new RegExp(`\\b${plan}\\b`).test(text)) {
       fail(
         "paired",
         rel,
-        `shows rendering(s) for ${[...rendered].join(", ")} but also names "${plan}" — a rendering is only ever shown beside its own drawing`,
+        `shows picture(s) of ${[...rendered].join(", ")} but also names "${plan}" — a picture of a plan is only ever shown beside its own drawing`,
       );
     }
   }

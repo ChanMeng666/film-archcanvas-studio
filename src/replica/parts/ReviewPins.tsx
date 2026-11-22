@@ -45,6 +45,11 @@ export function ReviewPins({ ctx }: { ctx: TargetContext }): JSX.Element | null 
   const k = spec.ck;
   const findings = state.review.findings;
   if (findings.length === 0) return null;
+  // The pins are about the PLAN. While the card shows its 3D preview there is no
+  // room for them to hang on, so they give way with the drawing and come back
+  // with it.
+  const shown = 1 - pct(state.preview3d.p);
+  if (shown <= 0.01) return null;
 
   const anchors = pinAnchors(ctx);
   const openIdx = state.review.openPin;
@@ -59,7 +64,7 @@ export function ReviewPins({ ctx }: { ctx: TargetContext }): JSX.Element | null 
   const card = openAnchor ? findingCardBox(ctx, openAnchor) : null;
 
   return (
-    <>
+    <div style={shown < 1 ? { opacity: shown } : undefined}>
       {/* The leader goes UNDER the pins and the card, so neither is crossed. */}
       {card && openAnchor ? <Leader ctx={ctx} from={card} to={openAnchor} /> : null}
 
@@ -106,7 +111,7 @@ export function ReviewPins({ ctx }: { ctx: TargetContext }): JSX.Element | null 
       {card && openFinding ? (
         <FindingCard ctx={ctx} box={card} message={openFinding.message} />
       ) : null}
-    </>
+    </div>
   );
 }
 

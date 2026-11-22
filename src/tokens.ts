@@ -166,7 +166,7 @@ export const BAND = {
  * cannot see.
  *
  * ⚠ **NO VIOLET FAMILY, at any tint.** The draw stage was periwinkle at 50 %
- * and the render stage periwinkle at 70 %, and in a 9:16 split scene that band
+ * and the 3D preview stage (then the render stage) periwinkle at 70 %, and in a 9:16 split scene that band
  * is a third of the frame — a large flat violet area, which is the thing the
  * founder objects to. A tint of a violet is still a violet; a pale one covering
  * a third of the frame is exactly the case the objection is about. The
@@ -209,7 +209,7 @@ export const STAGE = {
    * and the lightest of the two mints — `tweak` is the same hue at 40 %, three
    * chapters and one aubergine frame away.
    */
-  render: "#D7EFE4",
+  preview3d: "#D7EFE4",
   /** Buttercream, softened — the last colour before the end card. */
   export: "#F7EFC9",
 } as const;

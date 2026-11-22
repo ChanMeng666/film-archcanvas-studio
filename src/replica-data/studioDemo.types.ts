@@ -3,7 +3,7 @@
  * studio draws from, on the landing page and in the promo film.
  *
  * NEITHER RUNTIME PARSES SVG AND NEITHER IMPORTS ARCHLANG.
- * `scripts/generate-studio-demo.mjs` compiles the sources in
+ * `scripts/studio-demo/generate-studio-demo.mjs` compiles the sources in
  * `scripts/studio-demo/` at build time and commits THREE artifacts, which this
  * file is the hand-written contract for — `tsc` is what catches a generator
  * that drifts from it:
@@ -88,7 +88,14 @@ export interface DrawNode {
   fillOnly?: boolean;
 }
 
-/** One `<text>` leaf. Text fades in; it is never stroke-drawn. */
+/**
+ * One `<text>` leaf. Text fades in; it is never stroke-drawn.
+ *
+ * A WRAPPED label — one `<text>` holding one `<tspan x y>` per line, archlang
+ * >= 1.41 — is one leaf PER LINE, in line order: the parent's attributes, layer
+ * and `archId`, with `x`/`y` and `text` those of the line. Several leaves may
+ * share an `archId` (a room's name and its area figure always did).
+ */
 export interface TextNode {
   attrs: Record<string, string>;
   /** The rendered string, entities already decoded. */
@@ -173,7 +180,7 @@ export interface StudioDemoFilm {
 //   3. `tweak-0` is an ALIAS of `edit-after`, `tweak-1..3` are DELTAS on it, and
 //      attributes shared across a layer are hoisted into `defaults`.
 //
-// `resolveLandingPage` in `scripts/generate-studio-demo.mjs` is the reference
+// `resolveLandingPage` in `scripts/studio-demo/generate-studio-demo.mjs` is the reference
 // implementation of reading it: follow the alias, then the delta, then merge
 // the layer defaults under each node's own attributes.
 

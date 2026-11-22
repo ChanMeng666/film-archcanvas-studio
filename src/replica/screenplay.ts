@@ -7,7 +7,7 @@
  * a state.
  *
  * The demo's CONTENT (brief, title, chips, the parametric values, the review
- * findings, the rendering) arrives as `DemoInputs` rather than being imported,
+ * findings, the 3D preview still) arrives as `DemoInputs` rather than being imported,
  * so the same screenplay can run a second brief in the film without a second
  * screenplay — and so this directory keeps its zero-import rule.
  */
@@ -48,14 +48,13 @@ export const CHAPTERS: readonly ChapterMark[] = [
   { id: "edit", at: 13, label: "Edit" },
   { id: "tweak", at: 19, label: "Tweak" },
   { id: "review", at: 23.5, label: "Review" },
-  { id: "render", at: 28, label: "Render" },
+  { id: "preview3d", at: 28, label: "3D preview" },
   { id: "export", at: 31.5, label: "Export" },
 ] as const;
 
-/** The drafting sheet's script, taken from the real phase lines. */
-const DRAFTING_STEPS: readonly DraftingStep[] = DRAFTING_PHASES.map((p) =>
-  "pass" in p ? { line: p.line, pass: p.pass } : { line: p.line },
-);
+/** The drafting sheet's script, taken from the real phase lines. No pass counter:
+ *  the product sheet stopped showing one (2026-11-20). */
+const DRAFTING_STEPS: readonly DraftingStep[] = DRAFTING_PHASES.map((p) => ({ line: p.line }));
 
 /**
  * The townhouse the landing loop designs.
@@ -68,14 +67,13 @@ const DRAFTING_STEPS: readonly DraftingStep[] = DRAFTING_PHASES.map((p) =>
  * pin must quote the real output of the variant it hangs on, and that variant is
  * baked by the demo generator — so the fixture carries self-identifying
  * placeholders instead of invented architectural criticism, and
- * `tests/studioReplicaStrings.test.ts` asserts the marker so they can never be
+ * `tests/marketing/studioReplicaStrings.test.ts` asserts the marker so they can never be
  * mistaken for shippable copy. The landing page and the film both pass the
  * generated inputs.
  */
 export const FIXTURE_DEMO: DemoInputs = {
   brief:
     "A narrow two-storey townhouse: hall, living and kitchen downstairs, two double bedrooms and a bathroom upstairs.",
-  typology: "Residential",
   title: "Two-storey Townhouse",
   roomChips: [
     "Hall",
@@ -108,7 +106,7 @@ export const FIXTURE_DEMO: DemoInputs = {
       level: 0,
     },
   ],
-  renderingSrc: "/showcase/renders/two-storey-townhouse-exterior.webp",
+  preview3dSrc: "/studio-demo/townhouse-tweak3-3d.webp",
   pageCount: 2,
 };
 
@@ -127,9 +125,8 @@ export function buildScreenplay(demo: DemoInputs): Screenplay {
     b(0, 0.8, "brief", { k: "cursorTo", to: ref("composer.input"), ease: "outCubic" }),
     b(0.8, 0.18, "brief", { k: "click" }),
     b(1.0, 3.0, "brief", { k: "typeBrief", text: demo.brief }),
-    b(4.05, 0.4, "brief", { k: "cursorTo", to: ref("composer.typology"), ease: "outCubic" }),
-    b(4.45, 0.18, "brief", { k: "click" }),
-    b(4.45, 0.25, "brief", { k: "pickTypology", label: demo.typology }),
+    // The building type sits behind the box's closed "Options" (2026-11-20), so
+    // the brief goes straight to the priced button: no typology pick.
     b(4.8, 0.4, "brief", { k: "cursorTo", to: ref("composer.cta"), ease: "outCubic" }),
     b(5.2, 0.18, "brief", { k: "click" }),
     b(5.2, 0.3, "brief", { k: "launch" }),
@@ -140,7 +137,7 @@ export function buildScreenplay(demo: DemoInputs): Screenplay {
     // 4.3 s, not 3.8: the sheet has to still be up when `drawPlan` starts at 9.3
     // so it can hand over to the drawing appearing under it rather than cutting.
     // That is also what the product does — the sheet outlives the tool result
-    // and waits for the FRAME (`studio/CLAUDE.md` § DraftingSheet).
+    // and waits for the FRAME.
     b(5.5, 4.3, "draw", {
       k: "drafting",
       steps: DRAFTING_STEPS,
@@ -230,15 +227,23 @@ export function buildScreenplay(demo: DemoInputs): Screenplay {
     // thing the pin is about and staying inside `CAMERA_ENVELOPE`.
     b(25.95, 0.8, "review", { k: "camera", to: { cx: 0.44, cy: 0.545, zoom: 1.06 } }),
 
-    /* ── Render ────────────────────────────────────── 28 – 31.5 ─────────── */
-    b(28.0, 0.35, "render", { k: "cursorTo", to: storey(1), ease: "outCubic" }),
-    b(28.35, 0.18, "render", { k: "click" }),
-    b(28.35, 0.3, "render", { k: "switchStorey", page: 1 }),
-    b(29.0, 0.3, "render", { k: "cursorTo", to: storey(0), ease: "outCubic" }),
-    b(29.3, 0.18, "render", { k: "click" }),
-    b(29.3, 0.3, "render", { k: "switchStorey", page: 0 }),
-    b(29.8, 0.9, "render", { k: "camera", to: { cx: 0.5, cy: 0.5, zoom: 1 } }),
-    b(29.8, 1.5, "render", { k: "showRendering", src: demo.renderingSrc }),
+    /* ── 3D preview ────────────────────────────────── 28 – 31.5 ─────────── */
+    // The storeys first, then the card's own Plan | 3D preview switch: the same
+    // building standing up, every storey at once, and back to the plan before
+    // the export (which exports the plan).
+    b(28.0, 0.35, "preview3d", { k: "cursorTo", to: storey(1), ease: "outCubic" }),
+    b(28.35, 0.18, "preview3d", { k: "click" }),
+    b(28.35, 0.3, "preview3d", { k: "switchStorey", page: 1 }),
+    b(28.85, 0.3, "preview3d", { k: "cursorTo", to: storey(0), ease: "outCubic" }),
+    b(29.15, 0.18, "preview3d", { k: "click" }),
+    b(29.15, 0.3, "preview3d", { k: "switchStorey", page: 0 }),
+    b(29.3, 0.6, "preview3d", { k: "camera", to: { cx: 0.5, cy: 0.5, zoom: 1 } }),
+    b(29.3, 0.35, "preview3d", { k: "cursorTo", to: ref("sheet.view3d"), ease: "outCubic" }),
+    b(29.65, 0.18, "preview3d", { k: "click" }),
+    b(29.65, 0.5, "preview3d", { k: "open3d", src: demo.preview3dSrc }),
+    b(30.95, 0.3, "preview3d", { k: "cursorTo", to: ref("sheet.viewPlan"), ease: "outCubic" }),
+    b(31.25, 0.18, "preview3d", { k: "click" }),
+    b(31.25, 0.3, "preview3d", { k: "close3d" }),
 
     /* ── Export ────────────────────────────────────── 31.5 – 35 ─────────── */
     b(31.5, 0.45, "export", { k: "cursorTo", to: ref("sheet.export"), ease: "outCubic" }),

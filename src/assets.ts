@@ -8,40 +8,37 @@
  * unverifiable and stays that way.
  *
  * So the screenplay's asset paths are mapped through a TABLE of literal calls
- * rather than by rewriting a string at runtime. Six renderings, six checked
- * paths, and a screenplay that asks for a seventh throws here instead of drawing
+ * rather than by rewriting a string at runtime. One still, one checked path,
+ * and a screenplay that asks for a second throws here instead of drawing
  * nothing.
  */
 
 import { staticFile } from "remotion";
 
 /**
- * The product's own renderings, as `scripts/sync-replica.mjs` stages them:
- * `public/showcase/renders/<name>.webp` upstream becomes `public/renders/` here.
+ * The replica's image assets, as `scripts/sync-replica.mjs` stages them: the
+ * product's `public/<path>` is `public/<path>` here, under the same path the
+ * screenplay names. Since archcanvas #399 that is one still — the product's own
+ * 3D preview of the demo's final variant. (The renderings this table used to
+ * hold were removed from the product on 2026-11-22, and from here with them.)
  */
-const RENDERS: Record<string, string> = {
-  "two-storey-townhouse-aerial.webp": staticFile("renders/two-storey-townhouse-aerial.webp"),
-  "two-storey-townhouse-exterior.webp": staticFile("renders/two-storey-townhouse-exterior.webp"),
-  "two-storey-townhouse-interior.webp": staticFile("renders/two-storey-townhouse-interior.webp"),
-  "family-house-aerial.webp": staticFile("renders/family-house-aerial.webp"),
-  "family-house-exterior.webp": staticFile("renders/family-house-exterior.webp"),
-  "family-house-interior.webp": staticFile("renders/family-house-interior.webp"),
+const ASSETS: Record<string, string> = {
+  "/studio-demo/townhouse-tweak3-3d.webp": staticFile("studio-demo/townhouse-tweak3-3d.webp"),
 };
 
 /**
  * The `assetUrl` the replica is handed.
  *
- * The screenplay names `/showcase/renders/<name>.webp`, which is the path the
- * WEB host serves. Anything else is a bug in the screenplay or a rendering that
- * was never synced, and both are better as a thrown error at module-adjacent
- * time than as an empty card in master number six.
+ * The screenplay names `/studio-demo/<name>.webp`, which is the path the WEB
+ * host serves. Anything else is a bug in the screenplay or an asset that was
+ * never synced, and both are better as a thrown error at module-adjacent time
+ * than as an empty card in master number six.
  */
 export const replicaAssetUrl = (src: string): string => {
-  const name = src.slice(src.lastIndexOf("/") + 1);
-  const file = RENDERS[name];
+  const file = ASSETS[src];
   if (!file) {
     throw new Error(
-      `no synced rendering for "${src}" — add it to RENDERS in scripts/sync-replica.mjs and re-sync`,
+      `no synced asset for "${src}" — add it to ASSETS in scripts/sync-replica.mjs and src/assets.ts, and re-sync`,
     );
   }
   return file;

@@ -41,7 +41,7 @@ param(
 $ErrorActionPreference = "Continue"
 
 $repo = Split-Path -Parent $PSScriptRoot
-$stamp = "2026-09"
+$stamp = "2026-11"   # the cut month; must match render.ps1
 $base = "archcanvas-studio-$stamp"
 
 # Same single source as render.ps1: what the version IS and where it writes come

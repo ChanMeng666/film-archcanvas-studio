@@ -11,10 +11,11 @@
  * `STUDIO_DEMO` is the product's own generated module, synced. The brief is the
  * brief the product was given, the title is the title it drew, the room chips
  * are the rooms it found, and the three findings are verbatim `lint()` output on
- * the final variant. The one string that is not in that module — the typology
- * the composer picks — is read out of the product's own showcase roster at sync
- * time (`DEMO_TYPOLOGY`), and the edit command comes from the SYNCED
- * screenplay's own fixture, so the film authors none of it.
+ * the final variant. The edit command and the 3D preview still's path come
+ * from the SYNCED screenplay's own fixture, so the film authors none of it.
+ * (The composer no longer picks a typology: since the product's 2026-11-20
+ * change the building type sits behind a closed "Options" button, and the
+ * screenplay goes straight to the priced button.)
  *
  * ── Which payload is drawn ─────────────────────────────────────────────────
  *
@@ -33,7 +34,6 @@ import type { LandingPayload, PlanPage } from "./replica/planTypes";
 import type { PlanPageMap } from "./replica/resolvePages";
 import type { DemoInputs, ReplicaState, Screenplay } from "./replica/types";
 import {
-  DEMO_TYPOLOGY,
   LANDING,
   SHOWCASE_PLANS,
   STUDIO_DEMO,
@@ -52,12 +52,16 @@ import {
  */
 const PARAM_VARIANTS = ["tweak-0", "tweak-1", "tweak-2", "tweak-3"] as const;
 
-/** The rendering the render chapter fades in. Product output, never generated here. */
-export const RENDERING_SRC = "/showcase/renders/two-storey-townhouse-exterior.webp";
+/**
+ * The still the 3D preview chapter shows: the product's own 3D preview of the
+ * demo's final variant (tweak-3), baked upstream by the product's own capture
+ * script. Product output, never generated here. Read from the synced fixture
+ * so the film cannot point at a still the product does not ship.
+ */
+export const PREVIEW_3D_SRC: string = FIXTURE_DEMO.preview3dSrc;
 
 export const DEMO: DemoInputs = {
   brief: STUDIO_DEMO.brief,
-  typology: DEMO_TYPOLOGY,
   title: STUDIO_DEMO.title,
   roomChips: STUDIO_DEMO.roomChips,
   kitchen: STUDIO_DEMO.kitchen,
@@ -82,7 +86,7 @@ export const DEMO: DemoInputs = {
    * ban. Everything else the product says about a finding comes across.
    */
   findings: STUDIO_DEMO.findings.map(({ code: _code, ...finding }) => finding),
-  renderingSrc: RENDERING_SRC,
+  preview3dSrc: PREVIEW_3D_SRC,
   pageCount: Object.keys(STUDIO_DEMO.pageNames).length,
 };
 
@@ -189,17 +193,23 @@ export const DRAW_BEAT = { at: drawBeat?.at ?? 9.3, dur: drawBeat?.dur ?? 3.5 } 
  * about the shot; it does not change halfway through because a caption ended.
  */
 const captionBeat = SCREENPLAY.beats.find((b) => b.action.k === "caption");
-const renderBeat = SCREENPLAY.beats.find((b) => b.action.k === "showRendering");
+const open3dBeat = SCREENPLAY.beats.find((b) => b.action.k === "open3d");
+const close3dBeat = SCREENPLAY.beats.find((b) => b.action.k === "close3d");
 
 export const CAPTION_SPAN = {
   from: captionBeat?.at ?? 0,
   to: (captionBeat?.at ?? 0) + (captionBeat?.dur ?? 0),
 } as const;
 
-/** The rendering stays on screen once it has arrived, so this has no end. */
-export const RENDERING_SPAN = {
-  from: renderBeat ? renderBeat.at + renderBeat.dur * 0.4 : Infinity,
-  to: SCREENPLAY.durationSec,
+/**
+ * When the card shows its 3D preview, in screenplay seconds: from the click on
+ * "3D preview" until the click on "Plan" has faded it back out. The window in
+ * which the switch and the limits line — the product's own words for what the
+ * view is — have to stay in frame.
+ */
+export const PREVIEW_3D_SPAN = {
+  from: open3dBeat ? open3dBeat.at : Infinity,
+  to: close3dBeat ? close3dBeat.at + close3dBeat.dur : SCREENPLAY.durationSec,
 } as const;
 
 /**
@@ -245,15 +255,6 @@ export const OPEN_PIN_TRAVEL = {
   to: openPinBeat ? openPinBeat.at + openPinBeat.dur : OPEN_PIN_SEC,
 } as const;
 
-/**
- * The window the render beat travels across. Same shape, same reason: the
- * rendering card is a hole in the top-right of the frame until it fades in, and
- * `RENDERING_SPAN.from` is already the second the film counts it as present.
- */
-export const RENDERING_TRAVEL = {
-  from: renderBeat ? renderBeat.at : 0,
-  to: renderBeat ? renderBeat.at + renderBeat.dur * 0.7 : RENDERING_SPAN.from,
-} as const;
 
 /**
  * The `drawPlan` beat itself, for the warp.

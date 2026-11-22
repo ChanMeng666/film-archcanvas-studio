@@ -236,7 +236,7 @@ const CUT_60: readonly Edit[] = [
     why: "SETUP 3 — the card, on the brightest section at 37.33.",
   },
   { scene: "storey", sec: 3.8, replicaFrom: 28, replicaTo: 29.8, push: 1.04, why: "@41.13" },
-  { scene: "render", sec: 3.53, replicaFrom: 29.8, replicaTo: 31.5, push: 1.04, why: "@44.93" },
+  { scene: "preview3d", sec: 3.53, replicaFrom: 29.8, replicaTo: 31.5, push: 1.04, why: "@44.93" },
   { scene: "export", sec: 3.6, replicaFrom: 31.5, replicaTo: LOOP_FADE_SEC, push: 1.04, why: "@48.46" },
   { scene: "price", sec: 3.79, why: "@52.06, out on the crash at 55.85." },
   { scene: "endcard", sec: 4.15, why: "@55.85" },
@@ -252,7 +252,7 @@ const CUT_60: readonly Edit[] = [
  *   67.15        **the breakdown — the kick goes out** and the receipt gets the
  *                quiet. The one section of the film that admits what it got
  *                wrong is the one section with no drums under it.
- *   82.11        the groove returns: storeys, rendering, export
+ *   82.11        the groove returns: storeys, 3D preview, export
  *   97.23        the montage, four other plans, two bars each
  *   112.04       the drop-out: the price line in the quiet
  *   115.83       the lift: the end card, URL locking on the cadence
@@ -334,7 +334,7 @@ const CUT_120: readonly Edit[] = [
     why: "SETUP 4 — the card, readable, in the quietest part of the take. @72.58",
   },
   { scene: "storey", sec: 5.76, replicaFrom: 28, replicaTo: 29.8, push: 1.04, why: "The groove returns at 82.11." },
-  { scene: "render", sec: 5.62, replicaFrom: 29.8, replicaTo: 31.5, push: 1.04, why: "@87.87" },
+  { scene: "preview3d", sec: 5.62, replicaFrom: 29.8, replicaTo: 31.5, push: 1.04, why: "@87.87" },
   { scene: "export", sec: 5.61, replicaFrom: 31.5, replicaTo: LOOP_FADE_SEC, push: 1.04, why: "@93.49" },
   {
     scene: "second-brief",

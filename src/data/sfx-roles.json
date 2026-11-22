@@ -184,7 +184,7 @@
         "pin": "pin-drop",
         "sheet": "sheet",
         "confirm": "confirm",
-        "render": "shimmer"
+        "preview3d": "shimmer"
       },
       "anchor": "attack",
       "gainDb": -10,
@@ -215,7 +215,7 @@
             "pin": "pin-drop",
             "sheet": "paper-settle",
             "confirm": "stamp",
-            "render": "shimmer"
+            "preview3d": "shimmer"
           },
           "gainDb": -5,
           "perFile": {

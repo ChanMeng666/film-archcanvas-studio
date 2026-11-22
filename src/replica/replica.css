@@ -2,7 +2,7 @@
  * The replica's ONLY stylesheet.
  *
  * ⚠ HOUSE RULES (the same ones `types.ts` states for the TypeScript, and
- * `tests/studioReplicaPurity.test.ts` enforces both halves mechanically):
+ * `tests/marketing/studioReplicaPurity.test.ts` enforces both halves mechanically):
  *
  *  1. **Everything is scoped under `.studio-replica`.** This file is copied
  *     verbatim into the promo-film repo and imported next to that repo's own
@@ -162,13 +162,6 @@
     0 0 0 calc(var(--u) * 1.5) rgb(var(--sr-action-rgb) / 0.45),
     0 0 0 calc(var(--u) * 7) rgb(var(--sr-action-rgb) / 0.08),
     0 calc(var(--u) * 10) calc(var(--u) * 28) calc(var(--u) * -8) rgb(0 0 0 / 0.12);
-}
-
-/* The rendering: borderless float on the paper canvas (`.arch-photo`). */
-.studio-replica .sr-photo {
-  box-shadow:
-    0 calc(var(--u) * 1) calc(var(--u) * 2) rgb(0 0 0 / 0.06),
-    0 calc(var(--u) * 8) calc(var(--u) * 20) calc(var(--u) * -8) rgb(0 0 0 / 0.14);
 }
 
 /* ── the plan ────────────────────────────────────────────────────────────── */

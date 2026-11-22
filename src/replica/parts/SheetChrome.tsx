@@ -1,6 +1,7 @@
 /**
  * The chrome that floats around the sheet: the review badge, the storey chips,
- * the Export trigger, the tweak toggle and the caption row.
+ * the Plan | 3D preview switch, the Export trigger, the tweak toggle and the
+ * caption row.
  *
  * All of it is WORLD space — it rides the camera with the paper, exactly as
  * `DesignFrame`'s `-top-9 left-0` / `-top-9 right-0` clusters ride the card. The
@@ -13,8 +14,8 @@
 
 import type { JSX } from "react";
 import { Icon } from "../icons";
-import { sheetChrome, type LayoutSpec } from "../layout";
-import { EXPORT_TRIGGER, storeyChip } from "../strings";
+import { sheetChrome, type LayoutSpec, type Rect, type SheetChromeBoxes } from "../layout";
+import { EXPORT_TRIGGER, VIEW_3D_PREVIEW, VIEW_PLAN, storeyChip } from "../strings";
 import { type as typeStyle, u } from "../style";
 import type { ReplicaState } from "../types";
 
@@ -38,6 +39,10 @@ export function SheetChrome({
   const reviewOn = state.review.badgeCount > 0;
   const exportOn = state.exportMenu.open > 0.05;
   const tweakOn = state.tweaks.open > 0.05;
+  // The pressed half is what the card shows: "3D preview" for every frame its
+  // still is on screen at all (the same threshold `Preview3DView` draws at),
+  // because the pressed switch is what labels that view — there is no badge.
+  const open3d = state.preview3d.p > 0.01;
 
   return (
     <>
@@ -146,7 +151,26 @@ export function SheetChrome({
         >
           <Icon name="sliders" size={u(12 * k)} />
         </span>
+        {c.viewSwitchInToolbar ? (
+          <ViewSwitch c={c} k={k} open3d={open3d} originX={c.right.x} originY={c.right.y} />
+        ) : null}
       </div>
+
+      {/* ── the view switch, where the top row has no room for it ── */}
+      {!c.viewSwitchInToolbar ? (
+        <div
+          className="sr-pill sr-chrome"
+          style={{
+            position: "absolute",
+            left: u(c.viewSwitch.x),
+            top: u(c.viewSwitch.y),
+            width: u(c.viewSwitch.w),
+            height: u(c.viewSwitch.h),
+          }}
+        >
+          <ViewSwitch c={c} k={k} open3d={open3d} originX={c.viewSwitch.x} originY={c.viewSwitch.y} />
+        </div>
+      ) : null}
 
       {/* ── caption row ── the design's name and its version count. Always in
           flow under the sheet; the ONE permanent piece of text on the card. */}
@@ -175,6 +199,52 @@ export function SheetChrome({
           {state.versionLabel}
         </span>
       </div>
+    </>
+  );
+}
+
+/**
+ * Plan | 3D preview, the product's `ViewSwitch`: two pill buttons, the pressed
+ * one tinted the way the product tints it. The boxes are `sheetChrome`'s,
+ * offset by the parent the switch is drawn in.
+ */
+function ViewSwitch({
+  c,
+  k,
+  open3d,
+  originX,
+  originY,
+}: {
+  c: SheetChromeBoxes;
+  k: number;
+  open3d: boolean;
+  originX: number;
+  originY: number;
+}): JSX.Element {
+  const item = (box: Rect, label: string, active: boolean): JSX.Element => (
+    <span
+      key={label}
+      className="sr-pill sr-center"
+      style={{
+        position: "absolute",
+        left: u(box.x - originX),
+        top: u(box.y - originY),
+        width: u(box.w),
+        height: u(box.h),
+        ...typeStyle(10 * k, 1),
+        fontWeight: 500,
+        whiteSpace: "nowrap",
+        background: active ? "rgb(106 61 240 / 0.2)" : "transparent",
+        color: active ? "var(--sr-action)" : "var(--sr-muted-foreground)",
+      }}
+    >
+      {label}
+    </span>
+  );
+  return (
+    <>
+      {item(c.viewPlanBtn, VIEW_PLAN, !open3d)}
+      {item(c.view3dBtn, VIEW_3D_PREVIEW, open3d)}
     </>
   );
 }

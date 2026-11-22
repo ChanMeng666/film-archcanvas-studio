@@ -128,7 +128,7 @@ for (const row of rows) {
 }
 
 /** Anything under a synced root that the lock does not name is an unrecorded edit. */
-const SYNCED_ROOTS = [path.join("src", "replica"), path.join("src", "replica-data"), path.join("public", "renders")];
+const SYNCED_ROOTS = [path.join("src", "replica"), path.join("src", "replica-data"), path.join("public", "studio-demo")];
 const walk = (dir, out = []) => {
   if (!fs.existsSync(dir)) return out;
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {

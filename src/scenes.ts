@@ -51,7 +51,7 @@ export type ChapterId =
   | "edit"
   | "tweak"
   | "review"
-  | "render"
+  | "preview3d"
   | "export";
 
 /**
@@ -68,7 +68,7 @@ export const SCENE_IDS = [
   "tweak",
   "receipt",
   "storey",
-  "render",
+  "preview3d",
   "export",
   "price",
   "second-brief",
@@ -176,8 +176,9 @@ export interface Scene {
  *
  * The replica windows below are the chapters of the 35 s landing loop:
  * brief 0–5.5 · draw 5.5–13 · edit 13–19 · tweak 19–23.5 · review 23.5–28 ·
- * render 28–31.5 · export 31.5–35. `storey` and `render` split the render
- * chapter at 29.8, where the storey chips stop and the rendering fades in.
+ * 3D preview 28–31.5 · export 31.5–35. `storey` and `preview3d` split that
+ * chapter at 29.8, where the storey chips are done, the cursor has pressed the
+ * card's own "3D preview" switch and the 3D preview fades in over the plan.
  */
 export const SCENES: Readonly<Record<SceneId, Scene>> = {
   hook: {
@@ -191,7 +192,7 @@ export const SCENES: Readonly<Record<SceneId, Scene>> = {
   brief: {
     id: "brief",
     kind: "replica",
-    intent: "Someone types what they want. The composer, the typology, the launch control.",
+    intent: "Someone types what they want. The composer and the launch control.",
     chapter: "brief",
     defaultReplica: { from: 0, to: 5.5 },
     /*
@@ -302,22 +303,23 @@ export const SCENES: Readonly<Record<SceneId, Scene>> = {
     intent:
       "L0 → L1 → L0. One source, one page per level — which is when 'every room' is literally on screen.",
     copy: FACTS,
-    chapter: "render",
+    chapter: "preview3d",
     defaultReplica: { from: 28, to: 29.8 },
     // Both storey chips and the paper that changes under them.
     camera: { to: 1.04, fill: 0.86 },
   },
 
-  render: {
-    id: "render",
+  preview3d: {
+    id: "preview3d",
     kind: "replica",
     intent:
-      "The rendering fades in, carrying the product's own always-visible AI-generated pill. A presentation aid, never the pitch — so the film says nothing over it.",
-    chapter: "render",
+      "The card switches to its 3D preview: the same plan standing up, every storey at once, with the product's own Plan | 3D preview switch pressed and its limits line under the view. A look at the plan, never the pitch — so the film says nothing over it.",
+    chapter: "preview3d",
     defaultReplica: { from: 29.8, to: 31.5 },
-    // The rendering card carries the always-visible "AI-generated" pill, which
-    // `framePush` protects: this scale is the one the clamp allows.
-    // The drawing and the rendering card side by side, filling the frame.
+    // The 3D preview replaces the drawing INSIDE the sheet, so the shot is the
+    // sheet: the still, the limits line along its bottom edge and the view
+    // switch (in the toolbar pill in 16:9, at the end of the caption row in
+    // 9:16) that says what the view is. `camera.ts` § preview3d.
     camera: { to: 1.04, fill: 0.94 },
   },
 

@@ -1,107 +1,72 @@
 {
   "$comment": "WRITTEN BY scripts/sync-replica.mjs — NEVER HAND-EDIT.\n\nThe one-way boundary between this film and the product. Every row is a file\nCOPIED out of the archcanvas checkout named below, with the bytes it was copied\nas (text normalised to LF) and their sha256.\n\nsrc/replica/** IS NOT EDITABLE HERE. Fix it upstream and re-sync. `npm run\nverify:replica` re-hashes every row and fails on any difference, so an edit made\nhere shows up as drift rather than as a divergence nobody notices.\n\nRegenerate with `npm run sync:replica`. Check without writing: `--check`.",
   "generatedBy": "scripts/sync-replica.mjs",
-  "sourceRepo": "D:/.claude-scratch/2026-09-19/studio-replica/wp9/sync-src",
-  "sourceCommit": "ef55353ebcf3789a51219d315a7c13e6138f6eb9",
-  "sourceBranch": "HEAD",
+  "sourceRepo": "D:/github_repository/archcanvas",
+  "sourceCommit": "6a908297eb47574b441a5983236ba3040734f87b",
+  "sourceBranch": "main",
   "sourceDirty": false,
   "totals": {
-    "files": 45,
-    "bytes": 3172238,
+    "files": 39,
+    "bytes": 2014876,
     "byRole": {
-      "render": 6,
+      "asset": 1,
       "drawlist": 1,
       "landing": 1,
       "showcase": 1,
       "seam": 1,
       "demo": 1,
       "types": 1,
-      "replica": 33
+      "replica": 32
     }
   },
   "files": [
     {
-      "path": "public/renders/family-house-aerial.webp",
-      "bytes": 308696,
-      "sha256": "2b1d71dcb4f7cedf6a558991daf152721439b9f7ff3e7f8bd5783b60ef77e715",
-      "role": "render",
-      "source": "public/showcase/renders/family-house-aerial.webp"
-    },
-    {
-      "path": "public/renders/family-house-exterior.webp",
-      "bytes": 274006,
-      "sha256": "cad1389715b6ab795ff3e0cf7caada3b270841e7605113490ad16aaa248bb223",
-      "role": "render",
-      "source": "public/showcase/renders/family-house-exterior.webp"
-    },
-    {
-      "path": "public/renders/family-house-interior.webp",
-      "bytes": 201862,
-      "sha256": "399e8cc51a94e8be34e68980db68db4eecce8b94c09698dbff72530c66373fa0",
-      "role": "render",
-      "source": "public/showcase/renders/family-house-interior.webp"
-    },
-    {
-      "path": "public/renders/two-storey-townhouse-aerial.webp",
-      "bytes": 205836,
-      "sha256": "d8d3a501976585eb88c8873c4cf1a3f4f3d5a1b3311d10d977f431a15e3247e8",
-      "role": "render",
-      "source": "public/showcase/renders/two-storey-townhouse-aerial.webp"
-    },
-    {
-      "path": "public/renders/two-storey-townhouse-exterior.webp",
-      "bytes": 300352,
-      "sha256": "448fda6bc926e8870d6045ea8a65fc7554727a50204f291a4064af514308e30d",
-      "role": "render",
-      "source": "public/showcase/renders/two-storey-townhouse-exterior.webp"
-    },
-    {
-      "path": "public/renders/two-storey-townhouse-interior.webp",
-      "bytes": 116634,
-      "sha256": "49ac151afb70ce3f925f43aa739d6c360219039db502820f6a7750f8ea6bf1f6",
-      "role": "render",
-      "source": "public/showcase/renders/two-storey-townhouse-interior.webp"
+      "path": "public/studio-demo/townhouse-tweak3-3d.webp",
+      "bytes": 38856,
+      "sha256": "78f602862ffe2aa18de9711534d7a404a12e81558d88a5755faff276b35bc76d",
+      "role": "asset",
+      "source": "public/studio-demo/townhouse-tweak3-3d.webp"
     },
     {
       "path": "src/data/drawlist.json",
-      "bytes": 993602,
-      "sha256": "9794301ebad934702765887b22c6df0c244ca0ce5230f520d86e46b93d353432",
+      "bytes": 1124585,
+      "sha256": "72ee13f176a4ae1b4475a10dfc9fab1e382bea21dfc1e14e235d89988600f9be",
       "role": "drawlist",
       "source": "public/showcase/studio-demo/drawlist.json"
     },
     {
       "path": "src/data/landing.json",
-      "bytes": 190633,
-      "sha256": "b78100f06aa4f1797254038d66c86c985d3d3fe445f8a09345f184ad95b2054a",
+      "bytes": 202864,
+      "sha256": "22306e43019c459f74ff490c5d3c329eadde3368ae8792bd2dca5733d6530030",
       "role": "landing",
       "source": "public/showcase/studio-demo/landing.json"
     },
     {
       "path": "src/data/showcase-plans.json",
-      "bytes": 263130,
-      "sha256": "356d43fbf209a4abd321fab3163668089c3ff1e49df0dede3abc460e01458228",
+      "bytes": 337993,
+      "sha256": "993c2258154810c84f301ff03cd0ea8927aa718bdfcc1d1c039554239bfd15bd",
       "role": "showcase",
       "source": "public/showcase/plans/*.annotated.svg + src/lib/showcase.generated.ts",
       "inputs": [
         {
           "path": "src/lib/showcase.generated.ts",
-          "sha256": "1cf1a6fa716e88d993ba2c492b1646c72c33ae05ec2859881e50d272e74b65b5"
+          "sha256": "88924a0c483e8e3613865ab6305ffffcc2a3c6e4e875d88689516aea346296b4"
         },
         {
           "path": "public/showcase/plans/family-house.annotated.svg",
-          "sha256": "3012e0ad2e96cae1b5ecb8adcf9402ab63a4736f6d6a43a2d47d29a820e1f8b3"
+          "sha256": "8b8f49e85355e5289880c776e45a48482dc6c8db2a4faeea6ce6c028cd19a828"
         },
         {
           "path": "public/showcase/plans/courtyard-apartment.annotated.svg",
-          "sha256": "1a67d255bdb594495b6767beb43e8dd6eab95f01bd425a2fab01e14d85a839d1"
+          "sha256": "8c70c5dcc5c649d06c6fb981ebd3261c508295b16de54abd4b917a80f253d1f0"
         },
         {
           "path": "public/showcase/plans/accessible-clinic.annotated.svg",
-          "sha256": "b07ced6e3c6c8a363a520eb5933fc2d113323a21d98c8f685f4004ea81bc0d27"
+          "sha256": "e01220240ada9bd3128678921af7ed23fa613b7be9d637d75287f0c56ae6e70c"
         },
         {
           "path": "public/showcase/plans/compact-bedsit.annotated.svg",
-          "sha256": "3f71920ef2ad50e22bd8fdba21a8faf5fb9fc140078d223cfbd869d2e0630e2b"
+          "sha256": "72fdc7104aa8c0378c10d1606be72d479d9d27f4660f589084d7d308585cc5a3"
         }
       ]
     },
@@ -114,36 +79,29 @@
     },
     {
       "path": "src/replica-data/studioDemo.generated.ts",
-      "bytes": 56036,
-      "sha256": "56b4c4330f5a050c315b3c6c22e2753b72d0dd381772da10a9b259678f10e2f1",
+      "bytes": 59177,
+      "sha256": "d4eb6171247112931ff1734436db1ddc535d91711baaa7cd2311cf17318df26f",
       "role": "demo",
       "source": "src/lib/marketing/studioDemo.generated.ts"
     },
     {
       "path": "src/replica-data/studioDemo.types.ts",
-      "bytes": 13556,
-      "sha256": "999dd010d00c4c04a4e23b9042f9bf1627dcfcd24320ce4534e08c371cd81bdb",
+      "bytes": 13899,
+      "sha256": "54b8dc297f88a1b7ed817baa7e27f7f972d975c816202f282c694070b2bb3380",
       "role": "types",
       "source": "src/lib/marketing/studioDemo.types.ts"
     },
     {
-      "path": "src/replica/CLAUDE.md",
-      "bytes": 14125,
-      "sha256": "cdfd167535fc8a88b01101662fbe8fbefa32b1cabec1ef8ebba2d8bd308b9b02",
-      "role": "replica",
-      "source": "src/components/marketing/studio-replica/CLAUDE.md"
-    },
-    {
       "path": "src/replica/StudioReplica.tsx",
-      "bytes": 10572,
-      "sha256": "10d3d11e54e99d5306c7f2c7d42f5a865493bd186312974d5169bb3806ae9cc8",
+      "bytes": 10662,
+      "sha256": "394662f17d57e8cc667dfcc6fce5ba2902937a448a371bd3af4e4118f07c3580",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/StudioReplica.tsx"
     },
     {
       "path": "src/replica/at.ts",
-      "bytes": 16245,
-      "sha256": "6f6f54a07b0d178f3044bf757c3f60036ac3c2c1c24b58bfe397af1b17ee79e6",
+      "bytes": 16422,
+      "sha256": "914719cb771c07429528bd408946f15ff3783aeb0a23c22484409bb844002c39",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/at.ts"
     },
@@ -156,8 +114,8 @@
     },
     {
       "path": "src/replica/icons.tsx",
-      "bytes": 5809,
-      "sha256": "7666c0507b5b91e5607de3f57a59b020004da8364c4dbce2d16adfe34cf85c60",
+      "bytes": 5708,
+      "sha256": "c643de4ec59a66d564a4ecf0fb86199efbda837a3b14a3e8b54a7611d5a10fb7",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/icons.tsx"
     },
@@ -170,15 +128,15 @@
     },
     {
       "path": "src/replica/layout.ts",
-      "bytes": 29081,
-      "sha256": "d7b292bbd33df90cfdb385e186a536d7d050e98e9639d68a7d2fda168c16c6dc",
+      "bytes": 30288,
+      "sha256": "620bdb14aed8a62b63720301617e866f85cb5eb7512316cb1b0623492c947bd1",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/layout.ts"
     },
     {
       "path": "src/replica/layoutMap.ts",
-      "bytes": 17836,
-      "sha256": "a7f321feff6c7b23a274c88abbb5d048f8a92b98b495c7000021f4a9b2c03316",
+      "bytes": 18019,
+      "sha256": "d5987fb47109101f5f45917e71b11f4e97159a9e8fcac069f8844af1b9dd3ad4",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/layoutMap.ts"
     },
@@ -219,8 +177,8 @@
     },
     {
       "path": "src/replica/parts/Composer.tsx",
-      "bytes": 6730,
-      "sha256": "a0f997b1393d3c693f6e489a12c721b1c1a8c733ebe044e0ff51b4ef8b5029cf",
+      "bytes": 5285,
+      "sha256": "471e4b9cb9efcaf6f23bfc83646dfe4f858d7a1944fc1c2a71784e2b3de2610b",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/parts/Composer.tsx"
     },
@@ -253,23 +211,23 @@
       "source": "src/components/marketing/studio-replica/parts/PlanSvg.tsx"
     },
     {
-      "path": "src/replica/parts/RenderingCard.tsx",
-      "bytes": 2540,
-      "sha256": "cab6bdafb6daf516059a364187b9ae60a713778364a35ee66051e6dbf6a0b71f",
+      "path": "src/replica/parts/Preview3DView.tsx",
+      "bytes": 2750,
+      "sha256": "06739a3c21a3cea3860052071dec328ac44c1a5c41a73ade31fe87e2de69dcbf",
       "role": "replica",
-      "source": "src/components/marketing/studio-replica/parts/RenderingCard.tsx"
+      "source": "src/components/marketing/studio-replica/parts/Preview3DView.tsx"
     },
     {
       "path": "src/replica/parts/ReviewPins.tsx",
-      "bytes": 8026,
-      "sha256": "209a5be206f6e27049aa81535de7f573b81b9805313aaf6fc4ac58e368f8ecdd",
+      "bytes": 8336,
+      "sha256": "dd12dd519aa569f0a4a3aea08e41ccf75b2645f6c5e85a498321091e2d60bae9",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/parts/ReviewPins.tsx"
     },
     {
       "path": "src/replica/parts/SheetChrome.tsx",
-      "bytes": 6014,
-      "sha256": "0ed2560464413f86a59f1016e8185ce6fbb91430f71ece2ebf975e634a644c5a",
+      "bytes": 8172,
+      "sha256": "ee2f9a2a71cc034069aa9b0532fa50ef8879f3194cf3f0a1b5c169c4b87bced6",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/parts/SheetChrome.tsx"
     },
@@ -310,29 +268,29 @@
     },
     {
       "path": "src/replica/replica.css",
-      "bytes": 10428,
-      "sha256": "0fbd98677c7df1ab247dc048d55d7374b44f06d04679327ef6b9ff5b7755bdf9",
+      "bytes": 10171,
+      "sha256": "034c666c92d17a94c710255eb49aa0095c842afd21cd5481a3f964ecb72f1203",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/replica.css"
     },
     {
       "path": "src/replica/resolvePages.ts",
-      "bytes": 6296,
-      "sha256": "296d25a19ab802261720caac44ddc534a2aee61dfb430b2055d318e6412dbc4a",
+      "bytes": 6308,
+      "sha256": "900276ef26891495300837991fa8d836c805b1c6f856f64ac062363f54aa275a",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/resolvePages.ts"
     },
     {
       "path": "src/replica/screenplay.ts",
-      "bytes": 13707,
-      "sha256": "64960f838570d801d4e3e7ded84cdf61fe6dc374b9947c05d472bc5cb3bfb1bd",
+      "bytes": 14171,
+      "sha256": "b20c44bedc7a2a243a4ec271425aaee798eb0eee9c0da4bd34acd2514c3d1645",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/screenplay.ts"
     },
     {
       "path": "src/replica/strings.ts",
-      "bytes": 15798,
-      "sha256": "df5999c888644bb61502e6dd349dd45629312e0826677e1c7109e2d31ff50f9e",
+      "bytes": 16294,
+      "sha256": "e149ea4d945900221ea3a59f6b5e66e615d69647bd49bab605b5c139209d437e",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/strings.ts"
     },
@@ -345,15 +303,15 @@
     },
     {
       "path": "src/replica/types.ts",
-      "bytes": 13201,
-      "sha256": "4187057a728ac84188884171673cdec6c3687691c365f1a9b2c5c8759fca48db",
+      "bytes": 13419,
+      "sha256": "049e0575741f05010d1dd752a82be8ee50438459ccf730609bf7ab5196df3205",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/types.ts"
     },
     {
       "path": "src/replica/useReplicaClock.ts",
-      "bytes": 8141,
-      "sha256": "87c3129bd604ccfac39d7a29f978e23e8f855b1e81a7b8239d3aa67376e00c25",
+      "bytes": 8151,
+      "sha256": "8b16c1b5008a5a407c5880a025674c66cc8a0b4780aadcb397dcf6b54a8df1bc",
       "role": "replica",
       "source": "src/components/marketing/studio-replica/useReplicaClock.ts"
     }

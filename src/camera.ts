@@ -29,8 +29,9 @@
  * same pair of numbers, and `framePush` intersects them:
  *
  *   coverage    the page behind the picture is never exposed.
- *   protection  the honesty caption, and the "AI-generated" pill whenever a
- *               rendering is on screen, stay whole. A push that frames the
+ *   protection  the honesty caption, and the 3D preview's own marks (the
+ *               pressed "3D preview" switch and the limits line under the
+ *               view) whenever the 3D preview is on screen, stay whole. A push that frames the
  *               kitchen beautifully and slides the caption off the bottom edge
  *               is not a nice shot with a small problem — it is the film making
  *               a speed claim.
@@ -63,6 +64,7 @@ import {
   type TargetContext,
 } from "./replica/layoutMap";
 import type { PlanPage } from "./replica/planTypes";
+import { DASHBOARD_HEADING } from "./replica/strings";
 import { pickPage } from "./replica/resolvePages";
 import type { ReplicaState } from "./replica/types";
 import {
@@ -72,8 +74,7 @@ import {
   OPEN_PIN_SEC,
   OPEN_PIN_TRAVEL,
   PAGES,
-  RENDERING_SPAN,
-  RENDERING_TRAVEL,
+  PREVIEW_3D_SPAN,
   overlaps,
   stateAt,
 } from "./film-demo";
@@ -490,8 +491,10 @@ const lerpRect = (a: Rect, b: Rect, p: number): Rect =>
  * How far through its travel a beat is, or `null` when it does not travel.
  *
  * Exported so `shotFor` can interpolate the resolved PUSH rather than the focus
- * RECT — see the note there. `receipt` and `render` are the two, and the
- * windows are the screenplay's own.
+ * RECT — see the note there. `receipt` is the one (the 3D preview chapter
+ * used to travel to a floating rendering card; the 3D preview is drawn inside
+ * the sheet, so that beat no longer needs to), and the window is the
+ * screenplay's own.
  */
 export const travelProgress = (
   scene: SceneId,
@@ -500,7 +503,6 @@ export const travelProgress = (
 ): number | null => {
   if (at === undefined || !span) return null;
   if (scene === "receipt" && overlaps(span, OPEN_PIN_TRAVEL)) return travel(at, OPEN_PIN_TRAVEL);
-  if (scene === "render" && overlaps(span, RENDERING_SPAN)) return travel(at, RENDERING_TRAVEL);
   return null;
 };
 
@@ -514,7 +516,7 @@ export const focusRectFor = (
    *
    * Omitted, every beat returns its settled composition — which is what the
    * cropping and hero checks want, and what every other beat does at every
-   * frame. Supplied, `receipt` and `render` blend from what is on screen now to
+   * frame. Supplied, `receipt` blends from what is on screen now to
    * what the beat is about, over a window read off the screenplay. See
    * `film-demo.ts` § OPEN_PIN_TRAVEL.
    */
@@ -617,12 +619,23 @@ export const focusRectFor = (
       return unionR(chrome.storeyGroup, buildingBox(ctx) ?? sheetOnScreen(ctx));
     }
 
-    case "render": {
-      const drawing = buildingBox(ctx) ?? sheetOnScreen(ctx);
-      if (!span || !overlaps(span, RENDERING_SPAN)) return drawing;
-      // Same travel as the receipt beat, for the same reason: until the
-      // rendering has faded in, its half of the frame is a hole.
-      return lerpRect(drawing, unionR(spec.rendering, drawing), travel(at, RENDERING_TRAVEL));
+    case "preview3d": {
+      // The 3D preview is laid over the plan inside the sheet, so the shot is
+      // the whole CARD: the sheet (not the building: the still is the whole
+      // view, letterboxed on the paper), the chrome row above it and the
+      // caption row below it. The switch that says what the view is sits in
+      // one of those two rows (16:9 the row, 9:16 the caption). The first
+      // still framed only the sheet and the switch, and in 9:16 the chrome row
+      // above the sheet was cut through by the top edge of the frame.
+      const chrome = sheetChrome(spec, ctx.storeys, state.review.badgeCount);
+      const card = unionR(
+        unionR(unionR(sheetOnScreen(ctx), chromeToDesign(ctx, chrome.row)), chromeToDesign(ctx, chrome.caption)),
+        preview3dSwitchRect(ctx),
+      );
+      // Air, as `buildingBox` gives the building: the card framed to its own
+      // rows put the 16:9 caption row on the bottom edge of the frame.
+      const air = card.h * 0.04;
+      return { x: card.x - air, y: card.y - air, w: card.w + 2 * air, h: card.h + 2 * air };
     }
 
     case "export":
@@ -831,7 +844,7 @@ export const visibleSubjects = (ctx: TargetContext): Rect[] => {
     }
   }
 
-  if (state.rendering.p >= 0.5) out.push(spec.rendering);
+  if (state.preview3d.p >= 0.5) out.push(preview3dSwitchRect(ctx));
   if (state.exportMenu.open >= 0.5) out.push(exportMenuBox(ctx));
   if (state.tweaks.open >= 0.5) out.push(spec.tweaks.mode === "docked" ? tweaksBox(spec) : tweaksControls(ctx).track);
 
@@ -859,6 +872,41 @@ export const sheetCaptionRect = (ctx: TargetContext): Rect | null => {
   const tl = worldToDesign(spec, state.camera, cap.x, cap.y);
   const z = state.camera.zoom;
   return { x: tl.x, y: tl.y, w: cap.w * z, h: cap.h * z };
+};
+
+/**
+ * The card's Plan | 3D preview switch, in design space.
+ *
+ * In 16:9 it sits in the toolbar pill ahead of Export; in 9:16 at the right end
+ * of the caption row under the sheet (the product moves it to a touch bar on
+ * phones; the replica's top row has no room for it). Resolved through
+ * `sheetChrome` and `worldToDesign`, like the caption row above.
+ */
+export const preview3dSwitchRect = (ctx: TargetContext): Rect =>
+  chromeToDesign(ctx, sheetChrome(ctx.spec, ctx.storeys, ctx.state.review.badgeCount).viewSwitch);
+
+/** A `sheetChrome` box (world space) in design space. */
+const chromeToDesign = (ctx: TargetContext, r: Rect): Rect => {
+  const tl = worldToDesign(ctx.spec, ctx.state.camera, r.x, r.y);
+  const z = ctx.state.camera.zoom;
+  return { x: tl.x, y: tl.y, w: r.w * z, h: r.h * z };
+};
+
+/**
+ * The 3D preview's limits line: the strip along the bottom of the sheet where
+ * the product keeps "3D preview: walls, openings, ..." under every 3D preview.
+ *
+ * CONSERVATIVE, and says so: the film cannot measure text without fonts, so
+ * the strip is sized for TWO lines of the replica's 10-unit type at 1.35
+ * leading plus its 4-unit padding top and bottom (`Preview3DView`), the
+ * portrait sheet being narrow enough to wrap it. Over-reserving costs a little
+ * push; under-reserving would let the line that says what the view is slide
+ * off the frame.
+ */
+export const preview3dLimitsRect = (ctx: TargetContext): Rect => {
+  const sheet = sheetOnScreen(ctx);
+  const h = (2 * 10 * 1.35 + 2 * 4) * ctx.spec.ck * ctx.state.camera.zoom;
+  return { x: sheet.x, y: sheet.y + sheet.h - h, w: sheet.w, h };
 };
 
 /** How much of `a` lies inside `b`, 0..1. */
@@ -889,9 +937,12 @@ export interface Shot {
   filmCaption: boolean;
   /** How opaque that caption is at this instant, 0..1. */
   captionOpacity: number;
-  /** The rendering card's box after the push, and how opaque it is. */
-  renderingRect: StageRect;
-  renderingOpacity: number;
+  /**
+   * The 3D preview's two marks (the pressed switch and the limits line) after
+   * the push, and how opaque the 3D preview is. `verify:honesty` section 3.
+   */
+  preview3dMarkRects: StageRect[];
+  preview3dOpacity: number;
 }
 
 /**
@@ -1019,7 +1070,7 @@ export const shotFor = (
   // than frame by frame — a shot's framing is a decision about the shot, and a
   // cap that appears when a caption does and goes when it goes is a lurch.
   const captionRaw = designRect(mount, mount.spec.caption);
-  const renderingRaw = designRect(mount, mount.spec.rendering);
+  const marksRaw = [designRect(mount, preview3dSwitchRect(ctx)), designRect(mount, preview3dLimitsRect(ctx))];
   const span = { from: Math.min(from, to), to: Math.max(from, to) };
   const protect: StageRect[] = [];
   /*
@@ -1041,38 +1092,27 @@ export const shotFor = (
     else protect.push(pad(captionRaw, layout.u(6)));
   }
   /*
-   * ⚠ Protected while the rendering is ON SCREEN, not for every beat that will
-   * eventually hold it. The obligation is that the "AI-generated" pill is never
-   * cropped (`verify:honesty` § 3), and a card at 15 % opacity has no pill to
-   * crop — but reserving its rectangle pushed the drawing hard against the left
-   * edge and left 41 % of the frame empty on the right, waiting. Same defect as
-   * the receipt beat's, in the protection machinery rather than the framing.
+   * ⚠ The 3D preview's marks are protected while the 3D preview is ON SCREEN,
+   * and the protection RAMPS IN over its fade.
    *
-   * The 0.5 line is the same one the honesty gate reads, so the two cannot
-   * disagree about when the pill has to be whole.
+   * The view has no badge. Like the product, what says what it is is the
+   * card's own switch, pressed on "3D preview", and the limits line under the
+   * view (`Preview3DView`). Those two are this chapter's disclosure, so they
+   * are held whole exactly as the "AI-generated" pill on the rendering card
+   * this chapter replaced was (`verify:honesty` section 3), and with the same
+   * two lessons that pill paid for:
+   *
+   *  - Protected only while the view is on screen. Reserving a rectangle for a
+   *    thing at 15 % opacity left the frame holding a hole for it.
+   *  - Ramped, not switched. A protection that appears on one frame yanks the
+   *    framing on that frame. The framing eases into it over the view's own
+   *    fade and is FULLY protective by the 0.5 line `verify:honesty` reads.
    */
-  /*
-   * ⚠ The pill's protection RAMPS IN, and the boolean it replaces is the same
-   * defect twice over.
-   *
-   * It used to switch on the frame `state.rendering.p` crossed 0.5. A
-   * protection that appears on one frame yanks the framing on that frame: in
-   * 9:16 the render beat's building went from inside the frame to **801-1736**
-   * in a 1080-wide frame, cut through `Powder room`, and came back. The lean
-   * check could not see it because a travelling camera is exempt from lean,
-   * which is exactly when it happened.
-   *
-   * So the framing eases into the obligation over the card's own fade, and is
-   * FULLY protective by the 0.5 line `verify:honesty` reads — the pill is whole
-   * from the instant the gate asks, and nothing moves on a single frame. Below
-   * 0.02 there is no card at all, which is where D32 started: reserving its
-   * rectangle before it exists leaves a hole in the composition.
-   */
-  const pillWeight = overlaps(span, RENDERING_SPAN)
-    ? clamp01((state.rendering.p - 0.02) / (0.5 - 0.02))
+  const pillWeight = overlaps(span, PREVIEW_3D_SPAN)
+    ? clamp01((state.preview3d.p - 0.02) / (0.5 - 0.02))
     : 0;
   const pillOnScreen = pillWeight > 0;
-  const pillRect = pad(renderingRaw, layout.u(6));
+  const pillRects = marksRaw.map((r) => pad(r, layout.u(6)));
   /*
    * The export menu is the subject of its own beat, and in 9:16 it is a
    * full-width bottom sheet. Unprotected, the push slid it under the split
@@ -1080,6 +1120,25 @@ export const shotFor = (
    * row had been cut off — the line naming the thing the frame had cropped.
    */
   if (beat.scene === "export") protect.push(pad(designRect(mount, exportMenuBox(ctx)), layout.u(8)));
+  /*
+   * 9:16 only: the page's heading, "Your designs", is the first words of the
+   * replica and it sits flush with the card's left edge. The product's
+   * composer lost its typology row and the page its sub-line (archcanvas
+   * #365), and with the brief beat's push centred on the card the heading ran
+   * off the left edge of the frame in the first still. Protected at the width
+   * of its TEXT (the box is the card's full width), estimated the way the room
+   * labels are, so the push gives way just enough to keep it whole, together
+   * with the CTA at the card's right edge.
+   */
+  if (beat.scene === "brief" && layout.aspect === "portrait") {
+    const h = mount.spec.composer.heading;
+    const size = 40 * mount.spec.composer.scale;
+    const textW = Math.min(h.w, DASHBOARD_HEADING.length * size * LABEL_ADVANCE);
+    protect.push(pad(designRect(mount, { x: h.x, y: h.y, w: textW, h: h.h }), layout.u(6)));
+    // ...and the launch control on the far side, or the push simply slides
+    // the crop from the heading onto "Design my plan · 1 credit".
+    protect.push(pad(designRect(mount, mount.spec.composer.cta), layout.u(6)));
+  }
 
   /*
    * ⚠ A travelling beat interpolates the resolved PUSH, not the focus RECT.
@@ -1113,8 +1172,9 @@ export const shotFor = (
    */
   const travelP = (() => {
     const t0 = travelProgress(beat.scene, span, t);
-    if (t0 === null) return pillWeight > 0 && beat.scene === "render" ? pillWeight : null;
-    return Math.max(t0, pillWeight);
+    // Only `receipt` travels now. The 3D preview's marks sit inside the shot
+    // the preview3d beat already frames, so the obligation needs no move.
+    return t0;
   })();
   const focusAt = (rect: Rect | null): { film: StageRect; focus: { x: number; y: number } } => {
     const film = rect ? designRect(mount, rect) : mount.rect;
@@ -1138,14 +1198,17 @@ export const shotFor = (
    * Everything the solver needs that is not a rectangle list, named once so the
    * dry run below and the real push cannot drift apart.
    *
-   * ⚠ In 9:16 the pill is bounded by the SAFE frame, not by the frame.
+   * ⚠ In 9:16 the 3D preview's marks are bounded by the SAFE frame, not by
+   * the frame. Written first for the "AI-generated" pill they replaced:
    * `verify:honesty` asked whether the "AI-generated" pill's rectangle was
    * inside the FRAME, and it was — comfortably, legibly, and inside the bottom
    * 390 px the platforms cover with their own chrome. "Inside the frame" and
    * "visible to a viewer on the platform the vertical master is cut for" are
    * not the same claim, and the obligation (EU AI Act Art. 50) is about the
-   * second. Only while a rendering is on screen: bounding every portrait beat
-   * that way would pull back beats with no pill to protect.
+   * second. The same holds for the limits line and the switch, and in 9:16
+   * the switch sits on the caption row UNDER the sheet. Only while the 3D
+   * preview is on screen: bounding every portrait beat that way would pull
+   * back beats with nothing to protect.
    */
   const pushBase = {
     frameW: layout.width,
@@ -1209,13 +1272,13 @@ export const shotFor = (
       nudgeEdge: clipEdge,
     });
 
-  /** One framing, with the pill's protection weighted by how present it is. */
+  /** One framing, with the 3D preview marks' protection weighted by how present they are. */
   const solve = (f: StageRect, c: { x: number; y: number }): FramePush =>
     pillWeight <= 0
       ? solveWith(f, c, protect)
       : pillWeight >= 1
-        ? solveWith(f, c, [...protect, pillRect])
-        : lerpPush(solveWith(f, c, protect), solveWith(f, c, [...protect, pillRect]), pillWeight);
+        ? solveWith(f, c, [...protect, ...pillRects])
+        : lerpPush(solveWith(f, c, protect), solveWith(f, c, [...protect, ...pillRects]), pillWeight);
 
   const settledPush = solve(focusFilm, focus);
   const push =
@@ -1235,8 +1298,8 @@ export const shotFor = (
     captionRect: pushRect(push, captionRaw),
     captionOpacity: state.caption.p,
     filmCaption,
-    renderingRect: pushRect(push, renderingRaw),
-    renderingOpacity: state.rendering.p,
+    preview3dMarkRects: marksRaw.map((r) => pushRect(push, r)),
+    preview3dOpacity: state.preview3d.p,
   };
 };
 

@@ -3,7 +3,7 @@
  *
  * THE RULE: the replica is a coded reproduction of the real studio, so a string
  * here that the product does not say is a lie about the product. Each constant
- * names the file it mirrors, and `tests/studioReplicaStrings.test.ts` proves the
+ * names the file it mirrors, and `tests/marketing/studioReplicaStrings.test.ts` proves the
  * match rather than trusting the comment:
  *
  *  • where the product EXPORTS the string (or a function that returns it), the
@@ -17,39 +17,39 @@
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /*  Act I — the brief composer                                                */
-/*  src/components/dashboard/BriefComposer.tsx                                */
+/*  src/components/dashboard/BriefComposer.tsx (`COMPOSER_COPY`)              */
 /* ────────────────────────────────────────────────────────────────────────── */
 
-export const BRIEF_PLACEHOLDER =
-  "Describe your brief — e.g., a single-story 3-bedroom family home with an open-plan kitchen and living area, a home office, and a north-facing garden.";
+export const BRIEF_PLACEHOLDER = "A three-bedroom house with an open-plan kitchen and a study…";
 
 /**
- * The page the composer sits on (`src/app/dashboard/page.tsx`).
+ * The page the composer sits on: "Your designs" (`DASHBOARD_COPY.title` in
+ * `src/components/dashboard/DashboardView.tsx`).
  *
  * The replica's Act I is the dashboard's front door, and the front door has a
  * heading. Without it the opening seconds are a card floating in an empty band
  * — the first impression of the whole loop, and the one that has to read at a
- * glance. These two lines are the product's own, to the byte; the string test
- * reads `page.tsx` and asserts they are still there.
+ * glance. The product's own words, to the byte; the string test reads
+ * `DashboardView.tsx` and asserts they are still there. (The page has no
+ * sub-line under its title since 2026-11-20, so the replica draws none.)
  */
-export const DASHBOARD_HEADING = "Your Projects";
-export const DASHBOARD_SUBHEADING =
-  "Each project is one strong design, refined with your AI architectural designer on an infinite canvas.";
+export const DASHBOARD_HEADING = "Your designs";
 
-/** The line under the composer, when the architect still has credits. */
-export const COMPOSER_HINT =
-  "Enter to send, Shift+Enter for a new line. I'll design one strong floor plan and name the project for you.";
+/** The keyboard line (`COMPOSER_COPY.keys`). */
+export const COMPOSER_HINT = "Enter to send · Shift+Enter for a new line";
 
-/** The `<label for="dashboard-typology">`. */
-export const TYPOLOGY_LABEL = "Typology";
+/**
+ * The box's one secondary control (`COMPOSER_COPY.options`): building type and
+ * reference photos sit behind it, closed, so the replica draws the closed button
+ * and nothing it hides.
+ */
+export const OPTIONS_BUTTON = "Options";
 
-/** The select's default option. */
-export const TYPOLOGY_FREEFORM = "Free-form (no constraint)";
-
-/** The reference-image button. */
-export const REFERENCE_BUTTON = "Reference";
-
-/** The CTA, price and all. */
+/**
+ * The CTA, price and all (`COMPOSER_COPY.priced`): the box of an account whose
+ * next design is not its free first one, which is what a design shown being
+ * paid for is.
+ */
 export const BRIEF_CTA = "Design my plan · 1 credit";
 
 /* ────────────────────────────────────────────────────────────────────────── */
@@ -86,7 +86,11 @@ export function commandPlaceholderFor(elementName: string): string {
 /** The sheet's header word. */
 export const DRAFTING_LABEL = "Drafting…";
 
-/** The pass counter, shown only from pass 2 on. */
+/**
+ * The pass counter. The product sheet no longer shows one (2026-11-20: "pass 2/6"
+ * is the loop's budget, not the person's progress), so no phase below carries a
+ * `pass` and this is never drawn. Kept because `index.ts` is a published API.
+ */
 export function draftingPass(round: number, maxRounds: number): string {
   return `pass ${round}/${maxRounds}`;
 }
@@ -104,7 +108,7 @@ export function draftingPass(round: number, maxRounds: number): string {
  */
 export const DRAFTING_PHASES = [
   {
-    line: "Designing your plan…",
+    line: "Drawing the first layout…",
     progress: {
       type: "designer",
       toolCallId: "replica",
@@ -140,7 +144,7 @@ export const DRAFTING_PHASES = [
     },
   },
   {
-    line: "Checking every route, door and clearance across 2 floors…",
+    line: "Checking that every room can be reached across 2 floors…",
     progress: {
       type: "designer",
       toolCallId: "replica",
@@ -158,8 +162,7 @@ export const DRAFTING_PHASES = [
     },
   },
   {
-    line: "Fixing 3 issues across 2 floors — pass 2 of 4…",
-    pass: [2, 4] as [number, number],
+    line: "Fixing 3 problems in the drawing across 2 floors…",
     progress: {
       type: "designer",
       toolCallId: "replica",
@@ -178,8 +181,7 @@ export const DRAFTING_PHASES = [
     },
   },
   {
-    line: "Reviewing the drawing against your brief across 2 floors — pass 3 of 4…",
-    pass: [3, 4] as [number, number],
+    line: "Reviewing the drawing against your brief across 2 floors…",
     progress: {
       type: "designer",
       toolCallId: "replica",
@@ -218,15 +220,15 @@ export const DRAFTING_PHASES = [
 ] as const;
 
 /**
- * The sheet's "how long will this take" line, for the `architect` arm.
- * `expectationLine` (`src/lib/chat/designerProgress.ts`).
+ * The sheet's "how long will this take" line — one promise on every arm since
+ * 2026-11-20. `expectationLine` (`src/lib/chat/designerProgress.ts`), built from
+ * `WAIT_PROMISE` (`src/lib/studio/waitCopy.ts`).
  */
-export const EXPECTATION_LINE =
-  "Designing, checking and reviewing your plan — usually 2–3 minutes.";
+export const EXPECTATION_LINE = "A first design takes a while — usually 2 to 3 minutes.";
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /*  The sheet's chrome                                                        */
-/*  src/components/canvas/DesignFrame.tsx                                     */
+/*  src/components/canvas/designFrame/*.tsx                                  */
 /* ────────────────────────────────────────────────────────────────────────── */
 
 /** The ⚑ badge's accessible name. One finding is "1 finding". */
@@ -240,11 +242,20 @@ export function reviewBadgeLabel(count: number): string {
 export const PIN_FIX = "Have AI fix";
 export const PIN_DISMISS = "Dismiss";
 
-/** The always-visible disclosure pill on a rendering (EU AI Act Art 50). */
-export const RENDERING_PILL = "AI-generated";
+/**
+ * The card's view switch, Plan | 3D preview (`designFrame/ViewSwitch.tsx`; the
+ * second is also `PREVIEW_3D_NAME` in `src/lib/canvas/preview3d/policy.ts`).
+ */
+export const VIEW_PLAN = "Plan";
+export const VIEW_3D_PREVIEW = "3D preview";
 
-/** The on-demand render button. */
-export const GENERATE_RENDERING = "Generate rendering";
+/**
+ * The line the product keeps visible under every 3D preview
+ * (`PREVIEW_3D_LIMITS`, `src/lib/canvas/preview3d/policy.ts`): what the preview
+ * draws and what it does not.
+ */
+export const PREVIEW_3D_LIMITS_LINE =
+  "3D preview: walls, openings, floors, stairs and furniture in flat colours. No pitched roofs, sections or elevations.";
 
 /** The storey chip group's name, and one chip per storey. */
 export const STOREY_GROUP = "Storey";

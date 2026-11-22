@@ -8,7 +8,7 @@
  * file, which is why the hook lives beside the thing it drives rather than in
  * the landing tree: one `useReplicaClock` for the section, the preview harness
  * and anything else that wants to play the loop, and exactly one place where a
- * rAF exists. `tests/studioReplicaPurity.test.ts` allows the clock calls and the
+ * rAF exists. `tests/marketing/studioReplicaPurity.test.ts` allows the clock calls and the
  * `"use client"` directive HERE and nowhere else in the directory.
  *
  * ⚠ NOT exported from `index.ts`. The barrel is the contract with the film repo,

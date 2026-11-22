@@ -95,11 +95,11 @@ const BEATS = {
     ["draw", 1, 0.45, "money-shot"],
     ["tweak", 0, 0.7, "tweak"],
     ["receipt", 0, 0.78, "receipt"],
-    ["render", 0, 0.7, "rendering"],
+    ["preview3d", 0, 0.7, "3d-preview"],
     ["export", 0, 0.7, "export"],
   ],
   120: [
-    ["brief", 1, 0.6, "typology"],
+    ["brief", 1, 0.6, "launch"],
     ["draw", 1, 0.45, "money-shot"],
     ["receipt", 1, 0.62, "pin-open"],
     ["storey", 0, 0.6, "storeys"],

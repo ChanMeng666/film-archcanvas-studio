@@ -3,8 +3,8 @@
  *
  * The replica has two layouts and they are a RE-LAYOUT of each other, never a
  * crop: landscape draws into a nominal 1600x1000 box, portrait into 1000x1333
- * with the canvas on top and the command bar, the rendering and the tweaks panel
- * stacked under it. `replica.css` turns a design unit into pixels through `--u`,
+ * with the canvas on top and the command bar and the tweaks panel stacked under
+ * it. `replica.css` turns a design unit into pixels through `--u`,
  * so the same numbers are a 1600 px desktop band, a 360 px phone and a 1920 px
  * film frame.
  *
@@ -107,11 +107,10 @@ export interface LayoutSpec {
    */
   composer: {
     heading: Rect;
-    subheading: Rect;
     card: Rect;
     input: Rect;
-    typology: Rect;
-    reference: Rect;
+    /** The closed "Options" button, left of the CTA on the card's bottom row. */
+    options: Rect;
     cta: Rect;
     hint: Rect;
     /** The type scale of the Act I page — bigger than `k`. See above. */
@@ -130,7 +129,6 @@ export interface LayoutSpec {
    */
   toolbarCompact: boolean;
   draftCard: Rect;
-  rendering: Rect;
   caption: Rect;
   /**
    * The honesty caption's type size, in design units.
@@ -138,7 +136,7 @@ export interface LayoutSpec {
    * In the SPEC rather than in the component because it is the one sentence with
    * a legibility FLOOR — it is what stops a thirty-five second loop reading as a
    * speed claim, and a caption nobody can read is a caption nobody reads.
-   * `tests/studioReplicaLayout.test.ts` asserts it against the widths the
+   * `tests/marketing/studioReplicaLayout.test.ts` asserts it against the widths the
    * landing page and a phone actually render at.
    */
   captionSize: number;
@@ -212,7 +210,7 @@ export function layoutSpec(id: LayoutId, opts: LayoutOptions = {}): LayoutSpec {
  *
  * A bigger push buys a closer look and costs paper on every other frame, which
  * is a trade worth making explicitly rather than by accident.
- * `tests/studioReplicaLayout.test.ts` asserts no beat leaves this envelope.
+ * `tests/marketing/studioReplicaLayout.test.ts` asserts no beat leaves this envelope.
  */
 export const CAMERA_ENVELOPE = {
   maxZoom: 1.06,
@@ -333,13 +331,12 @@ function landscape(aspect: number, withFrame: boolean): LayoutSpec {
   const ak = 1.55;
   const cardW = 1180;
   const cardH = 344;
-  const blockH = 52 * ak + 26 * ak + 30 * ak + cardH + 18 * ak + 22 * ak;
+  const blockH = 52 * ak + 30 * ak + cardH + 18 * ak + 22 * ak;
   const blockY = Math.round((H - blockH) / 2);
   const heading: Rect = { x: Math.round((W - cardW) / 2), y: blockY, w: cardW, h: 52 * ak };
-  const subheading: Rect = { x: heading.x, y: heading.y + heading.h + 4 * ak, w: cardW, h: 26 * ak };
   const card: Rect = {
     x: heading.x,
-    y: Math.round(subheading.y + subheading.h + 30 * ak),
+    y: Math.round(heading.y + heading.h + 30 * ak),
     w: cardW,
     h: cardH,
   };
@@ -358,11 +355,9 @@ function landscape(aspect: number, withFrame: boolean): LayoutSpec {
     sheetChrome: { h: 26, gap: 10 },
     composer: {
       heading,
-      subheading,
       card,
       input: { x: card.x + 28 * ak, y: card.y + 22 * ak, w: card.w - 56 * ak, h: 118 * ak },
-      typology: { x: card.x + 110 * ak, y: rowY, w: 220 * ak, h: 32 * ak },
-      reference: { x: card.x + 348 * ak, y: rowY, w: 118 * ak, h: 32 * ak },
+      options: { x: card.x + 22 * ak, y: rowY, w: 96 * ak, h: 32 * ak },
       cta: { x: card.x + card.w - 22 * ak - 214 * ak, y: rowY, w: 214 * ak, h: 32 * ak },
       hint: { x: card.x + 4, y: Math.round(card.y + card.h + 14 * ak), w: card.w, h: 22 * ak },
       scale: ak,
@@ -371,7 +366,6 @@ function landscape(aspect: number, withFrame: boolean): LayoutSpec {
     toolbar,
     toolbarCompact: false,
     draftCard: { x: Math.round((W - 700) / 2), y: stage.y + Math.round((stage.h - 300) / 2), w: 700, h: 300 },
-    rendering: { x: W - 40 - 330, y: stage.y + 90, w: 330, h: 220 },
     // The honesty caption is read, not glanced at — it is the one sentence that
     // stops a compressed loop reading as a speed claim. Set at 18 units so it is
     // still ~12 px at an 1100 px render, and sized to the SENTENCE: a slab
@@ -412,7 +406,7 @@ function portrait(aspect: number, withFrame: boolean): LayoutSpec {
   /**
    * The band under the canvas — the command bar, and NOTHING else.
    *
-   * The first pass parked the rendering and the tweaks dock down here too, and
+   * The first pass parked a picture card and the tweaks dock down here too, and
    * the result was a third of a phone screen sitting empty for thirty of the
    * thirty-five seconds. Both are floating chrome in the product, so both float
    * here: the canvas keeps the height, and the two panels sit over its bottom
@@ -462,14 +456,14 @@ function portrait(aspect: number, withFrame: boolean): LayoutSpec {
   // to breathe, not a second scale factor.
   const ak = k;
   const cardW = W - 72;
-  const cardH = 620;
+  // One control row now (Options left, the CTA right), so the card ends one
+  // row sooner than when a typology row sat above it.
+  const cardH = 506;
   const headingH = 54 * ak;
-  const subH = 66 * ak;
-  const blockH = headingH + 8 * ak + subH + 36 * ak + cardH + 14 * ak + 60 * ak;
+  const blockH = headingH + 36 * ak + cardH + 14 * ak + 60 * ak;
   const blockY = Math.round((H - blockH) / 2);
   const heading: Rect = { x: 36, y: blockY, w: cardW, h: headingH };
-  const subheading: Rect = { x: 36, y: heading.y + headingH + 8 * ak, w: cardW, h: subH };
-  const card: Rect = { x: 36, y: Math.round(subheading.y + subH + 36 * ak), w: cardW, h: cardH };
+  const card: Rect = { x: 36, y: Math.round(heading.y + headingH + 36 * ak), w: cardW, h: cardH };
 
   return {
     id: "portrait",
@@ -484,12 +478,10 @@ function portrait(aspect: number, withFrame: boolean): LayoutSpec {
     sheetChrome: { h: 26 * ck, gap: 14 * ck },
     composer: {
       heading,
-      subheading,
       card,
       input: { x: card.x + 30, y: card.y + 30, w: card.w - 60, h: 310 },
-      typology: { x: card.x + 176, y: card.y + 386, w: card.w - 206, h: 78 },
-      reference: { x: card.x + 30, y: card.y + 500, w: 260, h: 78 },
-      cta: { x: card.x + card.w - 30 - 440, y: card.y + 500, w: 440, h: 78 },
+      options: { x: card.x + 30, y: card.y + 386, w: 260, h: 78 },
+      cta: { x: card.x + card.w - 30 - 440, y: card.y + 386, w: 440, h: 78 },
       hint: { x: card.x + 6, y: Math.round(card.y + cardH + 14 * ak), w: card.w, h: 60 * ak },
       scale: ak,
     },
@@ -497,7 +489,6 @@ function portrait(aspect: number, withFrame: boolean): LayoutSpec {
     toolbar,
     toolbarCompact: true,
     draftCard: { x: 40, y: stage.y + Math.round((stage.h - 480) / 2), w: W - 80, h: 480 },
-    rendering: { x: 16, y: stage.y + stage.h - 14 - 190, w: 285, h: 190 },
     caption: captionRect(portCap, W, stage.y + stage.h - 16 - portCap.h),
     captionSize: 14 * k,
     captionLines: 2,
@@ -524,6 +515,16 @@ export interface SheetChromeBoxes {
   right: Rect;
   exportBtn: Rect;
   tweakBtn: Rect;
+  /**
+   * The Plan | 3D preview switch. In the toolbar pill, ahead of Export, as the
+   * product's `FrameToolbar` has it; where the top row has no room for it (the
+   * portrait sheet), at the right end of the caption row instead.
+   */
+  viewSwitch: Rect;
+  viewPlanBtn: Rect;
+  view3dBtn: Rect;
+  /** Whether the switch sits in the toolbar pill (true) or the caption row. */
+  viewSwitchInToolbar: boolean;
   /** The always-in-flow caption row under the sheet. */
   caption: Rect;
 }
@@ -556,13 +557,33 @@ export function sheetChrome(spec: LayoutSpec, storeys: number, reviewCount: numb
   const tweakW = 26 * k;
   const rightPad = 4 * k;
   const rightGap = 3 * k;
-  const rightW = rightPad * 2 + exportW + rightGap + tweakW;
-  const rightX = spec.sheet.x + spec.sheet.w - rightW;
+  const baseRightW = rightPad * 2 + exportW + rightGap + tweakW;
+  const right0 = spec.sheet.x + spec.sheet.w - baseRightW;
 
   const storeyX = spec.sheet.x + badgeW + gap;
   /** The inner controls sit 2 units inside the pill that holds them. */
   const innerY = y + 2 * k;
   const innerH = h - 4 * k;
+
+  // The view switch: two pill buttons, "Plan" and "3D preview".
+  const planW = 34 * k;
+  const v3dW = 68 * k;
+  const viewGap = 2 * k;
+  const viewW = planW + viewGap + v3dW;
+  const leftEnd = storeyX + storeyW;
+  // In the toolbar when the pill, grown by the switch, still clears the left
+  // cluster by a gap. Export and the tweak toggle keep their places either way.
+  const inToolbar = right0 - viewW - rightGap - gap >= leftEnd;
+  const rightX = inToolbar ? right0 - viewW - rightGap : right0;
+  const rightW = inToolbar ? baseRightW + viewW + rightGap : baseRightW;
+
+  const captionX = spec.sheet.x + 2 * k;
+  const captionY = spec.sheet.y + spec.sheet.h + 8 * k;
+  const captionW = spec.sheet.w - 4 * k;
+  const captionH = 18 * k;
+  const viewSwitch: Rect = inToolbar
+    ? { x: rightX + rightPad, y: innerY, w: viewW, h: innerH }
+    : { x: captionX + captionW - viewW, y: captionY, w: viewW, h: captionH };
 
   return {
     row: { x: spec.sheet.x, y, w: spec.sheet.w, h },
@@ -575,13 +596,18 @@ export function sheetChrome(spec: LayoutSpec, storeys: number, reviewCount: numb
       h: innerH,
     })),
     right: { x: rightX, y, w: rightW, h },
-    exportBtn: { x: rightX + rightPad, y: innerY, w: exportW, h: innerH },
-    tweakBtn: { x: rightX + rightPad + exportW + rightGap, y: innerY, w: tweakW, h: innerH },
+    exportBtn: { x: right0 + rightPad, y: innerY, w: exportW, h: innerH },
+    tweakBtn: { x: right0 + rightPad + exportW + rightGap, y: innerY, w: tweakW, h: innerH },
+    viewSwitch,
+    viewPlanBtn: { x: viewSwitch.x, y: viewSwitch.y, w: planW, h: viewSwitch.h },
+    view3dBtn: { x: viewSwitch.x + planW + viewGap, y: viewSwitch.y, w: v3dW, h: viewSwitch.h },
+    viewSwitchInToolbar: inToolbar,
+    // Where the switch takes the caption row's right end, the row gives it up.
     caption: {
-      x: spec.sheet.x + 2 * k,
-      y: spec.sheet.y + spec.sheet.h + 8 * k,
-      w: spec.sheet.w - 4 * k,
-      h: 18 * k,
+      x: captionX,
+      y: captionY,
+      w: inToolbar ? captionW : captionW - viewW - gap,
+      h: captionH,
     },
   };
 }

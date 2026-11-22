@@ -45,9 +45,12 @@ be **whole or gone, never cropped** (2 px margin) and **never doubled** — a si
 with both visible fails. The band does not fade out; the handover to the replica's caption
 is a hard cut at the beat's start (`docs/decisions.md` D19, D23).
 
-**The product's own "AI-generated" pill**, on any rendering, always visible, never a hover
-state — EU AI Act Art. 50. `verify-honesty.mjs` requires the pill's rectangle to be wholly
-inside the frame whenever `renderingOpacity >= 0.5`, and `camera.ts` protects it there.
+**The 3D preview's own marks** — the card's switch pressed on "3D preview" and the limits
+line under the view — whole wherever the 3D preview shows. `verify-honesty.mjs` requires
+both rectangles wholly inside the frame whenever `preview3dOpacity >= 0.5`, and
+`camera.ts` protects them there. Until 2026-11-22 this was the product's "AI-generated"
+pill on a rendering (EU AI Act Art. 50); renderings left the product that day (archcanvas
+#399), and if one ever returns so does the pill rule.
 ⚠ **In 9:16 the bar is the SAFE frame, not the frame.** The pill was inside the frame and
 inside the bottom 390 px that Reels/TikTok/Shorts cover with their own chrome; "inside the
 frame" and "visible to a viewer on the platform the vertical master is cut for" are not

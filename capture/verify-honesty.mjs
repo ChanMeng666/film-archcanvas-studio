@@ -32,10 +32,15 @@
  *      never happen is the in-between: a caption with its top half showing.
  *   2. **It is never cropped** — its box, after the mount and after the push,
  *      is inside the frame at every sampled second it is readable.
- *   3. **The "AI-generated" pill is on screen whenever a rendering is >= 50 %
- *      opaque** (EU AI Act Art. 50). Checked as the rendering card's box being
- *      inside the frame, because the pill is drawn inside that card and the
- *      product owns where.
+ *   3. **The 3D preview's own marks are on screen whenever the 3D preview is
+ *      >= 50 % opaque**: the card's switch, pressed on "3D preview", and the
+ *      limits line under the view. The view carries no badge (nor does the
+ *      product's), so those two are what say it is a 3D preview of the plan
+ *      and what it does not draw. Checked as both boxes being inside the
+ *      frame, and in 9:16 inside the platform-safe frame. (This check was the
+ *      "AI-generated" pill on the rendering card until renderings left the
+ *      product on 2026-11-22; the obligation moved to the chapter that
+ *      replaced it, with the same geometry rules.)
  *   3b. **The film's own band never prints over the product's drafting sheet.**
  *      The band is an OPAQUE pill at the bottom of the stage; upstream keeps the
  *      sheet up while the drawing starts underneath it, so the money-shot beat
@@ -278,8 +283,8 @@ for (const d of DELIVERABLES) {
         }
       }
 
-      // 3 — the rendering card carries the always-visible "AI-generated" pill.
-      if (shot.renderingOpacity >= 0.5) {
+      // 3 — the 3D preview's switch and limits line say what the view is.
+      if (shot.preview3dOpacity >= 0.5) {
         pillSamples += 1;
         /*
          * ⚠ In 9:16 the bar is the SAFE frame, not the frame.
@@ -292,14 +297,17 @@ for (const d of DELIVERABLES) {
          * to clear their furniture.
          */
         const bottomBar = layout.aspect === "portrait" ? layout.safe.bottom : 0;
-        const inside = insideFrame(shot.renderingRect, layout.width, layout.height - bottomBar, MARGIN);
-        if (!inside) {
+        const names = ["the \"3D preview\" switch", "the 3D preview limits line"];
+        const bad = shot.preview3dMarkRects.findIndex(
+          (r) => !insideFrame(r, layout.width, layout.height - bottomBar, MARGIN),
+        );
+        if (bad >= 0) {
           fail(
-            "pill",
+            "preview3d",
             d.id,
-            `the rendering card — and its "AI-generated" pill — is ${bottomBar ? "inside the platform chrome band" : "cropped"} at ` +
+            `${names[bad]} is ${bottomBar ? "inside the platform chrome band" : "cropped"} at ` +
               `${(beat.startSec + f / FPS).toFixed(2)}s (push ${shot.push.scale.toFixed(3)}): ` +
-              `box ${fmt(shot.renderingRect)} in ${layout.width}x${layout.height}`,
+              `box ${fmt(shot.preview3dMarkRects[bad])} in ${layout.width}x${layout.height}`,
           );
           f = beat.durationInFrames;
         }
@@ -454,12 +462,12 @@ for (const d of DELIVERABLES) {
   console.log(
     `      ${d.id.padEnd(27)} ${r.effectiveSec.toFixed(2)}s ` +
       `(replica ${r.replicaOpaqueSec.toFixed(2)}s + film ${r.filmOverlaySec.toFixed(2)}s), ` +
-      `${r.captionSamples} frame(s) checked for cropping, ${r.pillSamples} for the pill`,
+      `${r.captionSamples} frame(s) checked for cropping, ${r.pillSamples} for the 3D preview's marks`,
   );
 }
 
 if (!failures.length) {
-  console.log(`\n  ✓ the caption clears ${HONESTY_MIN_SEC}s uncropped in all eight, the pill is never cut, no needle found\n`);
+  console.log(`\n  ✓ the caption clears ${HONESTY_MIN_SEC}s uncropped in all eight, the 3D preview's marks are never cut, no needle found\n`);
   process.exit(0);
 }
 

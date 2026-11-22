@@ -13,9 +13,12 @@
  *
  *   1. Every `staticFile("...")` string in `src/**` names a file that exists under
  *      `public/`. A miss is a hard failure.
- *   2. Every file under `public/renders/` is named by `src/data/replica-lock.json`,
- *      once that lock exists — a rendering that arrived by hand has no provenance,
- *      and law 2 of this repo is that nothing on screen is mocked up.
+ *   2. Every file under `public/studio-demo/` (the replica's synced image
+ *      assets: since 2026-11-22 the product's own 3D preview still) is named by
+ *      `src/data/replica-lock.json`, once that lock exists — an image that
+ *      arrived by hand has no provenance, and law 3 of this repo is that
+ *      nothing on screen is mocked up. (This was `public/renders/` while the
+ *      film showed the product's renderings.)
  *   3. It says out loud how many `staticFile()` calls it actually looked at.
  *
  * ── The vacuity banner ─────────────────────────────────────────────────────
@@ -97,10 +100,10 @@ for (const { rel, asset } of calls) {
   }
 }
 
-/* ── 2. every rendering has provenance ────────────────────────────────────── */
+/* ── 2. every synced replica image has provenance ─────────────────────────── */
 
-let lockNote = "src/data/replica-lock.json not present — rendering provenance unverified";
-const renderDir = path.join(PUBLIC_DIR, "renders");
+let lockNote = "src/data/replica-lock.json not present — replica image provenance unverified";
+const renderDir = path.join(PUBLIC_DIR, "studio-demo");
 
 if (fs.existsSync(LOCK)) {
   let lock = null;
@@ -115,15 +118,15 @@ if (fs.existsSync(LOCK)) {
       ? fs.readdirSync(renderDir).filter((n) => !n.startsWith("."))
       : [];
     for (const name of onDisk) {
-      const rel = `public/renders/${name}`;
+      const rel = `public/studio-demo/${name}`;
       if (!locked.has(rel)) {
         fail("unprovenanced", rel, "is on disk but not in the replica lock — it did not arrive by `npm run sync:replica`");
       }
     }
-    lockNote = `${onDisk.length} rendering(s) in public/renders/, all named by the lock`;
+    lockNote = `${onDisk.length} replica image(s) in public/studio-demo/, all named by the lock`;
   }
 } else if (fs.existsSync(renderDir) && fs.readdirSync(renderDir).length > 0) {
-  fail("unprovenanced", "public/renders/", "holds files but there is no replica lock to account for them");
+  fail("unprovenanced", "public/studio-demo/", "holds files but there is no replica lock to account for them");
 }
 
 /* ── 3. the audio manifests ───────────────────────────────────────────────── */

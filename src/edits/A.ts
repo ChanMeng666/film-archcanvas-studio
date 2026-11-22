@@ -86,12 +86,12 @@ const CUT_30: readonly Edit[] = [
   { scene: "edit", sec: 4.2, replicaFrom: 13, replicaTo: 19, push: 1.05 },
   { scene: "receipt", sec: 5.0, replicaFrom: 23.5, replicaTo: 28, push: 1.08 },
   {
-    scene: "render",
+    scene: "preview3d",
     sec: 2.4,
     replicaFrom: 29.8,
     replicaTo: 31.5,
     push: 1.04,
-    why: "The rendering only. The storey switch is cut — a thirty-second film cannot afford it.",
+    why: "The 3D preview only. The storey switch is cut — a thirty-second film cannot afford it.",
   },
   { scene: "price", sec: 2.0 },
   { scene: "endcard", sec: 2.8 },
@@ -108,7 +108,7 @@ const CUT_30: readonly Edit[] = [
  * it, which is why there are four more lines than there are cards.
  *
  * One push per chapter, in order: brief 1.05 · draw 1.08 · edit 1.06 ·
- * tweak 1.05 · review 1.10 · render 1.05 · export 1.06. The draw chapter's
+ * tweak 1.05 · review 1.10 · 3D preview 1.05 · export 1.06. The draw chapter's
  * first half and the storey beat hold the camera still so the chapter's single
  * push lands where the chapter's point is.
  */
@@ -141,9 +141,9 @@ const CUT_60: readonly Edit[] = [
     replicaFrom: 28,
     replicaTo: 29.8,
     push: 1,
-    why: "Parked — the render chapter's one push is on the rendering.",
+    why: "Parked — the 3D preview chapter's one push is on the 3D preview.",
   },
-  { scene: "render", sec: 4.0, replicaFrom: 29.8, replicaTo: 31.5, push: 1.05 },
+  { scene: "preview3d", sec: 4.0, replicaFrom: 29.8, replicaTo: 31.5, push: 1.05 },
   { scene: "export", sec: 6.0, replicaFrom: 31.5, replicaTo: LOOP_FADE_SEC, push: 1.06 },
   { scene: "price", sec: 2.2 },
   { scene: "endcard", sec: 3.8 },
@@ -153,7 +153,8 @@ const CUT_60: readonly Edit[] = [
 
 /**
  * Depth, not more scenes. Every chapter that rewards a second look is cut in
- * two — the brief at the typology pick, the edit at the send, the tweak at the
+ * two — the brief at 3.0 s (once the typology pick, which the product has since
+ * moved behind "Options"), the edit at the send, the tweak at the
  * second parameter step, the review between the pins dropping and one opening
  * — so nothing sits still for more than eight seconds and every half gets its
  * own push.
@@ -166,7 +167,7 @@ const CUT_60: readonly Edit[] = [
 const CUT_120: readonly Edit[] = [
   { scene: "hook", sec: 2.2 },
   { scene: "brief", sec: 6.0, replicaFrom: 0, replicaTo: 3.0, push: 1.04, why: "The cursor and the typing." },
-  { scene: "brief", sec: 5.0, replicaFrom: 3.0, replicaTo: 5.5, push: 1.06, why: "The typology and the launch control." },
+  { scene: "brief", sec: 5.0, replicaFrom: 3.0, replicaTo: 5.5, push: 1.06, why: "The end of the brief and the launch control. (Cut here for a typology pick the product has since moved behind Options.)" },
   { scene: "draw", sec: 8.0, replicaFrom: 5.5, replicaTo: DRAW_HANDOFF_SEC, push: 1.03, why: "0.48x over the sheet — the phase lines are readable here." },
   { scene: "draw", sec: 8.0, replicaFrom: DRAW_HANDOFF_SEC, replicaTo: 13, push: 1.1, why: "0.46x. The money shot, twice as long as the product takes." },
   { scene: "claim-what", sec: 2.2 },
@@ -177,7 +178,7 @@ const CUT_120: readonly Edit[] = [
   { scene: "receipt", sec: 7.0, replicaFrom: 23.5, replicaTo: 25.8, push: 1.06, why: "The badge, then three pins land." },
   { scene: "receipt", sec: 7.0, replicaFrom: 25.8, replicaTo: 28, push: 1.12, why: "One pin opens and is read. The film's slowest push." },
   { scene: "storey", sec: 8.0, replicaFrom: 28, replicaTo: 29.8, push: 1.05 },
-  { scene: "render", sec: 8.0, replicaFrom: 29.8, replicaTo: 31.5, push: 1.05 },
+  { scene: "preview3d", sec: 8.0, replicaFrom: 29.8, replicaTo: 31.5, push: 1.05 },
   { scene: "export", sec: 8.0, replicaFrom: 31.5, replicaTo: LOOP_FADE_SEC, push: 1.08 },
   // ⚠ These two windows are PLAN INDICES into the montage, not screenplay
   // seconds — see `scenes.ts` § second-brief. Two plans in seven seconds, then

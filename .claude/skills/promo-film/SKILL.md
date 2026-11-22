@@ -132,8 +132,9 @@ Then, with no gate involved: play the four beds end to end and listen for the sp
 to six seconds from each end), the entry and the ending; play a master and check the first
 cue is not buried, that nothing clips, that the ending resolves rather than stops. Then
 pull eight evenly spaced stills from each master and look — the replica really drawn
-rather than blank, the honesty caption in the draw section, the "AI-generated" pill on the
-rendering, the end card reading `archcanvas.uk`, no bare `$`, nothing naming the language.
+rather than blank, the honesty caption in the draw section, the 3D preview's switch and
+limits line whole wherever it shows, the end card reading `archcanvas.uk`, no bare `$`,
+nothing naming the language.
 **Human judgement**, all of it — say plainly which of these you actually did.
 
 **11. Release.** `docs/release.md` is the procedure; `references/versions.md` the shape.

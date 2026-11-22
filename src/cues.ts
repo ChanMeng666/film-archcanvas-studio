@@ -224,7 +224,7 @@ export const cuesFor = (cut: CutId): CueSheet => {
      * ⚠ Seeded from the beat's FIRST frame, never from zero.
      *
      * Seeded from zero, every one of these fires on the first frame of every
-     * later beat: the 30 s cut's render beat opens with all three review pins
+     * later beat: the 30 s cut's 3D preview beat opens with all three review pins
      * already down, so a zero-seeded `prevPins` read three pins landing and
      * dropped three pin cues on top of the cut — six pin drops in a film with
      * three pins, all at the wrong moments. A cue is a CHANGE, so the state
@@ -235,7 +235,7 @@ export const cuesFor = (cut: CutId): CueSheet => {
     let prevPressed = seed.cursor.pressed;
     let prevVariant: string | null = seed.tweaks.open > 0.3 ? seed.tweaks.activeVariant : null;
     let prevPins: readonly number[] = seed.review.pinsDropped;
-    let prevRendering = seed.rendering.p;
+    let prevPreview3d = seed.preview3d.p;
     let prevToast = seed.toast.p;
     let prevDrawn = seed.plan.bands[4] ?? 0;
     // The first frame of this beat on which the pen is moving. -1 = never.
@@ -276,9 +276,9 @@ export const cuesFor = (cut: CutId): CueSheet => {
       }
       prevPins = s.review.pinsDropped;
 
-      // the rendering arriving, and the toast stamping
-      if (prevRendering < 0.02 && s.rendering.p >= 0.02) out.push({ atSec, role: "appear", intent: "render" });
-      prevRendering = s.rendering.p;
+      // the 3D preview arriving, and the toast stamping
+      if (prevPreview3d < 0.02 && s.preview3d.p >= 0.02) out.push({ atSec, role: "appear", intent: "preview3d" });
+      prevPreview3d = s.preview3d.p;
       if (prevToast < 0.05 && s.toast.p >= 0.05) out.push({ atSec, role: "appear", intent: "confirm" });
       prevToast = s.toast.p;
     }

@@ -71,7 +71,11 @@ param(
 $ErrorActionPreference = "Continue"
 
 $repo = $PSScriptRoot
-$stamp = "2026-09"
+# The month a cut was made, in every filename. 2026-09 was the first cut;
+# 2026-11 is the re-sync in which the render chapter became the 3D preview
+# chapter (archcanvas #399). The folder stays the VERSION; the stamp says which
+# cut of it a file is.
+$stamp = "2026-11"
 $base  = "archcanvas-studio-$stamp"
 
 # --- which VERSION is this? -------------------------------------------------
@@ -193,7 +197,11 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 # NOTHING IS EVER KILLED AUTOMATICALLY. A human decides, because one of these
 # could be a render someone else started on purpose -- which is also why the
 # wording says "already running" rather than asserting they are orphans.
-$projectGlob = "*archcanvas-promo-studio\node_modules*"
+# Derived from this script's own folder, not typed: the repo was renamed from
+# archcanvas-promo-studio to film-archcanvas-studio and the typed glob kept
+# naming the old folder, so the scan matched nothing and printed "no Remotion
+# processes" whatever was running.
+$projectGlob = "*" + (Split-Path $repo -Leaf) + "\node_modules*"
 $remotionNames = @("remotion.exe", "chrome-headless-shell.exe", "node.exe", "esbuild.exe")
 
 function Show-Orphans {

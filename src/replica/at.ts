@@ -77,7 +77,7 @@ function initialState(t: number): ReplicaState {
     act: "composer",
     actProgress: 0,
     cursor: { from: null, to: null, p: 1, ease: "linear", pressed: false, ripple: 0 },
-    composer: { text: "", caret: false, typology: null, ctaPressed: false },
+    composer: { text: "", caret: false, ctaPressed: false },
     drafting: {
       visible: false,
       line: "",
@@ -107,7 +107,7 @@ function initialState(t: number): ReplicaState {
     },
     storey: { page: 0, chipsVisible: false },
     review: { badgeCount: 0, pinsDropped: [], findings: [], openPin: null },
-    rendering: { p: 0, src: null },
+    preview3d: { p: 0, src: null },
     exportMenu: { open: 0, hovered: null },
     toast: { text: null, p: 0 },
     caption: { text: null, p: 0 },
@@ -214,11 +214,6 @@ function applyBeat(
 
     case "typeBrief": {
       s.composer.text = a.text.slice(0, typedLength(a.text, p));
-      return version;
-    }
-
-    case "pickTypology": {
-      if (p >= 0.5) s.composer.typology = a.label;
       return version;
     }
 
@@ -356,9 +351,17 @@ function applyBeat(
       return version;
     }
 
-    case "showRendering": {
-      s.rendering.src = a.src;
-      s.rendering.p = easeOutCubic(p);
+    case "open3d": {
+      s.preview3d.src = a.src;
+      s.preview3d.p = easeOutCubic(p);
+      return version;
+    }
+
+    case "close3d": {
+      // Back to the plan from wherever the view stands. The still stays named
+      // until the plan is fully back, so the fade has something to fade.
+      s.preview3d.p = s.preview3d.p * (1 - easeOutCubic(p));
+      if (p >= 1) s.preview3d.src = null;
       return version;
     }
 

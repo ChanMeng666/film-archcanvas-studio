@@ -27,7 +27,6 @@ const PATHS: Record<string, string[]> = {
     "M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1",
   ],
   share: ["M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8", "M16 6l-4-4-4 4", "M12 2v13"],
-  image: ["M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z", "M21 15l-5-5L5 21"],
   download: ["M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", "M7 10l5 5 5-5", "M12 15V3"],
   chevronDown: ["M6 9l6 6 6-6"],
   flag: ["M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z", "M4 22v-7"],
@@ -146,7 +145,7 @@ export function Spinner({
  * Drawn rather than borrowed: a real cursor is an OS bitmap that a screenshot
  * catches and a film cannot, so every product demo that wants one draws it. Two
  * passes — a white outline under a near-black body — so it reads on the ivory
- * page, on the white sheet and over a rendering.
+ * page, on the white sheet and over the 3D preview.
  */
 export function CursorArrow({ size, color = "#1c1917" }: { size: string; color?: string }): JSX.Element {
   const d = "M5.5 2.5 L5.5 20.6 L10.3 15.9 L13.3 21.9 L16.6 20.3 L13.6 14.4 L20.1 14.4 Z";

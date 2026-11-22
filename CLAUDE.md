@@ -6,7 +6,7 @@ Remotion 4.0.522 at 30 fps.
 
 What is on screen is a **coded replica** of the product's studio: the infinite canvas,
 the brief composer, the drafting sheet, the plan drawing itself out by layer, an edit, a
-parameter, the review pins, a rendering, the export menu. It is rebuilt in plain CSS and
+parameter, the review pins, the 3D preview, the export menu. It is rebuilt in plain CSS and
 React as a pure function of time, so it re-lays-out for a 9:16 frame instead of being
 cropped into one.
 
@@ -35,9 +35,9 @@ holds every phrase with the approved source it came from, and `capture/verify-co
 is a gate. A phrase with no clearance row fails the build — deliberately: the line nobody
 cleared is exactly the line that slips.
 
-**3. Nothing on screen is mocked up.** Every drawing, every number, every rendering and
+**3. Nothing on screen is mocked up.** Every drawing, every number, every picture and
 every interface string came out of the real product: the plans are baked by the product's
-own compiler into `src/data/drawlist.json`, the renderings are the product's own output,
+own compiler into `src/data/drawlist.json`, the 3D preview still is the product's own output,
 the strings are the product's own strings. A replica CAN draw a number no compiler
 emitted — that is what `verify:numbers` is for.
 
@@ -80,8 +80,12 @@ Six that will bite:
 - The **honesty caption**. A real design takes two to three minutes; the replica
   compresses it to seconds, and time compression read as a speed promise is a claim
   nobody made. **≥ 3 s in every one of the eight masters.**
-- The product's own **"AI-generated" pill**, on any rendering, always visible, never a
-  hover state (EU AI Act Art. 50).
+- Wherever the 3D preview shows, its own **marks**: the card's switch pressed on
+  "3D preview" and the limits line under the view, both whole (`verify:honesty` § 3).
+  The view has no badge, in the product or here. Until 2026-11-22 this line was the
+  product's **"AI-generated" pill** on a rendering (EU AI Act Art. 50); renderings left
+  the product that day (archcanvas #399) and the film's render chapter became the 3D
+  preview chapter. If a rendering ever comes back, so does the pill rule.
 
 ## Structure
 
@@ -125,7 +129,7 @@ src/data/            drawlist.json (the numbers gate's record), landing.json
                      baked at sync time), music.json (every music version, and
                      which is active), sfx.json, replica-lock.json (the ledger)
 public/brand/        the product's wordmark + icon, for the end card
-public/renders/      SYNCED renderings
+public/studio-demo/  SYNCED replica images: the product's 3D preview still
 public/audio/        beds/<version>/ — four beds per music take — + the
                      fourteen synthesised cues
 capture/             the gates, and `stills.mjs` — the look pass

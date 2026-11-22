@@ -17,7 +17,7 @@
  *   src/lib/marketing/studioDemo.generated.ts   ->  src/replica-data/studioDemo.generated.ts
  *   public/showcase/studio-demo/drawlist.json   ->  src/data/drawlist.json
  *   public/showcase/studio-demo/landing.json    ->  src/data/landing.json
- *   public/showcase/renders/<listed>.webp       ->  public/renders/<name>.webp
+ *   public/studio-demo/<listed>.webp            ->  public/studio-demo/<name>.webp
  *   public/showcase/plans/<listed>.annotated.svg -> src/data/showcase-plans.json  (BAKED)
  *
  * and then writes `src/replica-data/index.ts`, the one piece of glue this repo
@@ -32,7 +32,7 @@
  * of the product's own published showcase plans, flattened from their
  * `.annotated.svg` into a draw list the film can stroke on. It is baked at sync
  * time, with the PRODUCT'S OWN PARSER (`parsePageSvg`, imported out of the
- * source checkout's `scripts/generate-studio-demo.mjs`) rather than a second
+ * source checkout's `scripts/studio-demo/generate-studio-demo.mjs`) rather than a second
  * SVG reader written here — the parser throws on any construct it does not
  * recognise, so a compiler that starts grouping under a transform stops the
  * sync instead of quietly baking a plan that draws in the wrong place. That
@@ -148,8 +148,11 @@ const REPLICA_SRC = path.join("src", "components", "marketing", "studio-replica"
 const REPLICA_DEST = path.join("src", "replica");
 
 /**
- * `CLAUDE.md` is INCLUDED on purpose: it is the replica's own law (pure render,
- * no wall-clock, relative imports only) and the copy is useless without it.
+ * The replica's own law (pure render, no wall-clock, relative imports only)
+ * used to travel as a `CLAUDE.md` inside the directory. Upstream moved it to
+ * `.claude/rules/components-marketing-studio-replica.md` (outside the copied
+ * directory), so it no longer comes across; this repo's own `CLAUDE.md` and
+ * `verify:replica`'s greps carry the parts the film depends on.
  * Tests are excluded — they belong to the product's vitest projects and would
  * not run here anyway.
  */
@@ -204,23 +207,17 @@ const SHOWCASE_DEST = path.join("src", "data", "showcase-plans.json");
 const SHOWCASE_ROSTER = path.join("src", "lib", "showcase.generated.ts");
 
 /**
- * The renderings. Pre-existing product output, reused rather than regenerated —
- * `two-storey-townhouse` is the home page's and the film's main plan, and
- * `family-house` is the 120s cut's second brief.
+ * The replica's own image assets, copied byte for byte from the product's
+ * `public/` under the same path, so the screenplay's `/studio-demo/<name>` is
+ * `public/studio-demo/<name>` here too.
  *
- * AI renderings, so every one of them carries the product's own "AI-generated"
- * pill wherever it appears on screen (EU AI Act Art 50). That is a rule for the
- * scenes, not for this script, but it is recorded here because this is where
- * the files enter the repo.
+ * Since the product's 2026-11-22 change (archcanvas #399) that is ONE still:
+ * the product's own 3D preview of the demo's final variant (tweak-3), baked by
+ * the product's `scripts/showcase/capture-3d.mjs`. The renderings the film
+ * used to sync from `public/showcase/renders/` were deleted upstream when
+ * renderings left the product, and they left this repo with them.
  */
-const RENDERS = [
-  "two-storey-townhouse-aerial.webp",
-  "two-storey-townhouse-exterior.webp",
-  "two-storey-townhouse-interior.webp",
-  "family-house-aerial.webp",
-  "family-house-exterior.webp",
-  "family-house-interior.webp",
-];
+const ASSETS = [path.join("public", "studio-demo", "townhouse-tweak3-3d.webp")];
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Copying
@@ -369,15 +366,10 @@ for (const f of FILES) {
   plan({ srcAbs: from(f.src), destRel: f.dest, role: f.role, sourceRel: slash(f.src) });
 }
 
-/* the renderings ----------------------------------------------------------- */
+/* the replica's image assets --------------------------------------------- */
 
-for (const name of RENDERS) {
-  plan({
-    srcAbs: from("public", "showcase", "renders", name),
-    destRel: path.join("public", "renders", name),
-    role: "render",
-    sourceRel: slash(path.join("public", "showcase", "renders", name)),
-  });
+for (const rel of ASSETS) {
+  plan({ srcAbs: from(rel), destRel: rel, role: "asset", sourceRel: slash(rel) });
 }
 
 /* the second-brief montage, BAKED ------------------------------------------ */
@@ -386,7 +378,7 @@ for (const name of RENDERS) {
  * Flatten four published showcase plans into one draw list.
  *
  * The parser is the PRODUCT'S: `parsePageSvg` out of the source checkout's own
- * `scripts/generate-studio-demo.mjs`. Writing a second SVG reader here is the
+ * `scripts/studio-demo/generate-studio-demo.mjs`. Writing a second SVG reader here is the
  * shape of bug that `planTypes.ts` upstream calls out — two readers that agree
  * until one day they do not — and this one is strict by construction: it throws
  * on any element, attribute or stray byte it does not recognise, so a compiler
@@ -398,9 +390,9 @@ for (const name of RENDERS) {
  * montage is selectable, and the montage carries no pins.
  */
 async function bakeShowcase() {
-  const generatorAbs = from("scripts", "generate-studio-demo.mjs");
+  const generatorAbs = from("scripts", "studio-demo", "generate-studio-demo.mjs");
   if (!fs.existsSync(generatorAbs)) {
-    die(`the product's own page parser is missing: ${slash(path.join(SOURCE, "scripts", "generate-studio-demo.mjs"))}`);
+    die(`the product's own page parser is missing: ${slash(path.join(SOURCE, "scripts", "studio-demo", "generate-studio-demo.mjs"))}`);
   }
   if (!fs.existsSync(from("node_modules"))) {
     die(
@@ -408,7 +400,7 @@ async function bakeShowcase() {
         `the source checkout has no node_modules, so its own page parser cannot be imported:`,
         `  ${slash(path.join(SOURCE, "node_modules"))}`,
         "",
-        "`scripts/generate-studio-demo.mjs` imports the compiler at module scope. Run",
+        "`scripts/studio-demo/generate-studio-demo.mjs` imports the compiler at module scope. Run",
         "`npm install` in the source checkout (or point --from at one that has it).",
         "",
         "Not falling back to a second SVG reader written here: the montage would bake",
@@ -424,7 +416,7 @@ async function bakeShowcase() {
     die(`could not load the product's page parser: ${String(err.message).split("\n")[0]}`);
   }
   if (typeof parsePageSvg !== "function") {
-    die("scripts/generate-studio-demo.mjs no longer exports parsePageSvg — the montage bake has lost its parser.");
+    die("scripts/studio-demo/generate-studio-demo.mjs no longer exports parsePageSvg — the montage bake has lost its parser.");
   }
 
   const rosterAbs = from(SHOWCASE_ROSTER);
