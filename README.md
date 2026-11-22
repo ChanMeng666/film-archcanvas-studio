@@ -16,7 +16,10 @@ https://github.com/user-attachments/assets/f3686aaa-8bdf-4a8c-88b4-7f33aca8f18a
 
 
 
-▶ Watch on YouTube: https://youtu.be/rUZAiXgt9JY
+**Current cut: 2026-11.** Its sixth chapter is the product's 3D preview of the plan, where the 2026-09 cut showed an AI rendering; it also shows the product's current dashboard and drafting sheet. The video above and the YouTube upload are the **earlier 2026-09 cut**.
+
+- ⬇ Full-quality masters of the current cut, all sixteen files: [masters-2026-11](https://github.com/ChanMeng666/film-archcanvas-studio/releases/tag/masters-2026-11)
+- ▶ Watch on YouTube (earlier 2026-09 cut): https://youtu.be/rUZAiXgt9JY
 
 Four lengths (15, 30, 60 and 120 s) by two aspect ratios (16:9 and 9:16), in two music versions, all cut from one scene library.
 

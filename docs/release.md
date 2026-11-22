@@ -42,6 +42,48 @@ same discipline `src/data/music-grid.ts` already records under "one clock".
 
 ---
 
+## The 2026-11 cut — both versions re-rendered 2026-11-22 at `7700f0b`
+
+**Current.** Sixteen masters, `archcanvas-studio-2026-11_*`, eight in each of
+`out/masters/A-confident-arrival/` and `out/masters/B-daylight-forward/`, released as
+GitHub Release `masters-2026-11`. The 2026-09 files stay in release `masters-2026-10`.
+
+What changed is the picture, not the music, the edit or the sound set: the replica was
+re-synced from archcanvas `6a90829`, which brings in #364, #365 and #399.
+
+- **The render chapter is now the 3D preview chapter.** Renderings were removed from
+  the product on 2026-11-22. After the storey switch the cursor presses the card's own
+  `Plan | 3D preview` switch, and the card shows a still of the product's own 3D preview
+  of the demo's final variant (`public/studio-demo/townhouse-tweak3-3d.webp`), every
+  storey at once, with the product's limits line under it, then presses `Plan` again
+  before the export. No master shows an AI image, so none carries the "AI-generated"
+  pill; `verify:honesty` § 3 now holds the switch and the limits line whole instead.
+  The chapter is in B's 60 s and 120 s cuts and in A's 30, 60 and 120 s cuts. B's 15 s
+  and 30 s cuts have no 3D chapter, as they had no render chapter.
+- **Act I is "Your designs"** with a closed "Options" button and no typology pick (#365),
+  and the drafting sheet carries the product's current phase lines and expectation line,
+  with no pass counter (#364).
+- Edit timing is unchanged: A's resolved timeline is identical to its lock (only the
+  scene name `render` became `preview3d`), and B's boundaries are where they were.
+
+Every master is exact on frame count (450 / 900 / 1800 / 3600), 30 fps, h264 / yuv420p,
+with AAC audio, and passed `verify:flash`. Loudness, measured from the files:
+
+| | 15 s | 30 s | 60 s | 120 s |
+|---|---|---|---|---|
+| A, LUFS / dBTP | −15.5 / −3.4 | −16.1 / −4.1 | −16.2 / −2.0 | −16.2 / −3.0 |
+| B, LUFS / dBTP | −16.2 / −2.2 | −16.2 / −3.2 | −16.2 / −3.3 | −16.1 / −2.1 |
+
+`verify:strict` is red on one thing, and it is not new: `verify:timeline --strict` fails
+on seven pace notes (cards holding 3.8–5.8 s against the 2.2 s ceiling) in edit B as
+released in 2026-09. The tree before this re-sync fails identically. Re-timing B's cards
+is a re-cut, not part of a re-sync, so it was left alone.
+
+The YouTube upload and the README's embedded video are still the 2026-09 cut; replacing
+them is done by hand in a browser.
+
+---
+
 ## Version A — re-rendered 2026-09-20 at `8181e86`
 
 Eight masters, `out/masters/A-confident-arrival/`. Every one exact on frame count
